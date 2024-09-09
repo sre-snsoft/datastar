@@ -2,12 +2,12 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: ingress-nginx
-  namespace: datastar
+  namespace: argocd
 spec:
   project: default
   destination:
-    namespace: default  #update namespace name if you wish
-    name: in-cluster   #update cluster name if its different
+    namespace: datastar  #update namespace name if you wish
+    name: https://1E6883606AA0C1F32C17BC2B9FCAC358.gr7.ap-southeast-1.eks.amazonaws.com   #update cluster name if its different
   source:
     repoURL: https://kubernetes.github.io/ingress-nginx
     targetRevision: "4.4.0"
