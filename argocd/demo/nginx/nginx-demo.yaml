@@ -1,0 +1,38 @@
+# nginx-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  replicas: 3  # 启动3个副本的Nginx容器
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest  # 使用官方Nginx镜像
+          ports:
+            - containerPort: 80  # 暴露容器的80端口
+---
+# nginx-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  namespace: nginx
+
+spec:
+  selector:
+    app: nginx  # 选择与Deployment中的标签匹配的Pod
+  ports:
+    - protocol: TCP
+      port: 80  # 服务的端口
+      targetPort: 80  # 转发到容器中的端口
+  type: LoadBalancer  # 仅在集群内暴露服务，其他类型有 NodePort 或 LoadBalancer
