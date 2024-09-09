@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: signoz-dev
+spec:
+  project: default
+  source:
+    repoURL: https://charts.signoz.io           # 这里填写 Helm 仓库的 URL
+    chart: signoz                               # Helm chart 的名称
+    targetRevision: latest                      # 版本号，使用最新的可以写 "latest"
+    helm:
+      valueFiles:
+        - https://github.com/ranmaoshu1/datastar.git/argocd/demo/nginx/values-signoz-dev.yaml
+  destination:
+    server: //1E6883606AA0C1F32C17BC2B9FCAC358.gr7.ap-southeast-1.eks.amazonaws.com
+    namespace: signoz-dev                       # 指定应用程序部署的命名空间
+  syncPolicy:
+    automated:
+      prune: true                               # 自动修剪未使用的资源
+      selfHeal: true                            # 自动修复资源差异
