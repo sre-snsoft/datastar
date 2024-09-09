@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: skywalking
+  namespace: argocd
+spec:
+  syncPolicy:
+    preserveResourcesOnDeletion: true
+  generators:
+    - clusters: {}
+  template:
+    metadata:
+      name: skywalking
+      finalizers:
+        # This finalizer is for demo purposes, in production remove apps using argocd CLI "argocd app delete workload --cascade"
+        # When you invoke argocd app delete with --cascade, the finalizer is added automatically.
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      project: default
+      source:
+        repoURL: 'https://sre-game2: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@github.com/sre-snsoft/skywalking-snsoft.git'
+        path: 'chart/skywalking'
+        targetRevision: 'HEAD'
+        helm:
+          valueFiles:
+            - values.yaml
+      destination:
+        server: 'https://kubernetes.default.svc'
+        namespace: 'skywalking'
+      syncPolicy:
+        automated:
+          allowEmpty: true
+        syncOptions:
+        - CreateNamespace=true
+        retry:
+          limit: 60
