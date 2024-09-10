@@ -165,7 +165,7 @@ clickhouse:
     # -- Annotations to use by service associated to Clickhouse instance
     annotations: {}
     # -- Service Type: LoadBalancer (allows external access) or NodePort (more secure, no extra cost)
-    type: ClusterIP
+    type: LoadBalancer
     # -- Clickhouse HTTP port
     httpPort: 8123
     # -- Clickhouse TCP port

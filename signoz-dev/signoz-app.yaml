@@ -18,14 +18,15 @@ spec:
     spec:
       project: default
       sources:
-        repoURL: 'https://github.com/ranmaoshu1/datastar.git'
-        path: 'signoz-dev'
-        directory:
-          recurse: true
-        targetRevision: 'HEAD'
-        helm:
-          valueFiles:
-            - values.yaml
+        - repoURL: 'https://github.com/ranmaoshu1/datastar.git'
+          path: './signoz-dev'
+          directory:
+            recurse: true
+          targetRevision: 'HEAD'
+          helm:
+            valueFiles:
+              - values.yaml
+
       destination:
         server: 'https://kubernetes.default.svc'
         namespace: 'platform'
