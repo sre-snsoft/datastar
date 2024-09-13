@@ -1,11 +1,11 @@
 apiVersion: "clickhouse.altinity.com/v1"
 kind: "ClickHouseInstallation"
 metadata:
-  name: "argocd"
+  name: "argocd-clickhouse"
 spec:
   configuration:
     clusters:
-      - name: "demo"
+      - name: "clickhouse"
         layout:
           shardsCount: 3
           replicasCount: 2
@@ -30,6 +30,26 @@ spec:
     zookeeper: 
       nodes:
         - host: keeper
+  service:
+    http:
+      type: LoadBalancer
+      port: 8123
+      annotations:
+        service.beta.kubernetes.io/aws-load-balancer-type: “nlb”
+        service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+        service.beta.kubernetes.io/aws-load-balancer-name: "clickhouse-posthog"
+        service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+        service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: '60'
+    tcp:
+      type: LoadBalancer
+      port: 9000
+      annotations:
+        service.beta.kubernetes.io/aws-load-balancer-type: “nlb”
+        service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+        service.beta.kubernetes.io/aws-load-balancer-name: "clickhouse-posthog"
+        service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+        service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: '60'
+
   templates:
     podTemplates:
       - name: server

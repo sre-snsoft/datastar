@@ -6,32 +6,32 @@ read
 set -x
 argocd app create clickhouse-operator \
  --repo https://github.com/ranmaoshu1/datastar.git \
- --path argocd/argocd-clickhouse-posthog/appsclickhouse-operator \
+ --path argocd/argocd-clickhouse-posthog/apps/clickhouse-operator \
  --dest-server https://kubernetes.default.svc --dest-namespace ${NS}
 
 argocd app create prometheus \
  --repo https://github.com/ranmaoshu1/datastar.git \
- --path argocd/argocd-clickhouse-posthog/appsprometheus \
+ --path argocd/argocd-clickhouse-posthog/apps/prometheus \
  --dest-server https://kubernetes.default.svc --dest-namespace ${NS}
 
 argocd app create grafana \
  --repo https://github.com/ranmaoshu1/datastar.git \
- --path argocd/argocd-clickhouse-posthog/appsgrafana \
+ --path argocd/argocd-clickhouse-posthog/apps/grafana \
  --dest-server https://kubernetes.default.svc --dest-namespace ${NS}
 
 argocd app create zookeeper \
  --repo https://github.com/ranmaoshu1/datastar.git \
- --path argocd/argocd-clickhouse-posthog/appszookeeper \
+ --path argocd/argocd-clickhouse-posthog/apps/zookeeper \
  --dest-server https://kubernetes.default.svc --dest-namespace ${NS}
 
 argocd app create clickhouse \
  --repo https://github.com/ranmaoshu1/datastar.git \
- --path argocd/argocd-clickhouse-posthog/appsclickhouse \
+ --path argocd/argocd-clickhouse-posthog/apps/clickhouse \
  --dest-server https://kubernetes.default.svc --dest-namespace ${NS}
 
 argocd app create cloudbeaver \
  --repo https://github.com/ranmaoshu1/datastar.git \
- --path argocd/argocd-clickhouse-posthog/appscloudbeaver \
+ --path argocd/argocd-clickhouse-posthog/apps/cloudbeaver \
  --dest-server https://kubernetes.default.svc --dest-namespace ${NS}
 argocd app sync clickhouse-operator
 argocd app sync prometheus
