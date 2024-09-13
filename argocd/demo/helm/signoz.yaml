@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: signoz-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    chart: signoz
+    repoURL: https://charts.signoz.io
+    targetRevision: 0.53.0
+    helm:
+      releaseName: signoz
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: signoz-dev
