@@ -2,8 +2,8 @@
 apiVersion: v1
 kind: Service
 metadata:
-  # DNS would be like keeper.zoons
-  name: keeper
+  # DNS would be like zookeeper.zoons
+  name: zookeeper
   labels:
     app: zookeeper
 spec:
@@ -20,8 +20,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  # DNS would be like keeper-0.zookeepers.etc
-  name: keepers
+  # DNS would be like zookeeper-0.zookeepers.etc
+  name: zookeepers
   labels:
     app: zookeeper
 spec:
@@ -66,7 +66,7 @@ spec:
     matchLabels:
       app: zookeeper
   serviceName: zookeepers
-  replicas: 1
+  replicas: 3
   updateStrategy:
     type: RollingUpdate
   podManagementPolicy: OrderedReady
@@ -94,7 +94,7 @@ spec:
       containers:
         - name: kubernetes-zookeeper
           imagePullPolicy: IfNotPresent
-          image: "docker.io/zookeeper:3.8.1"
+          image: "docker.io/zookeeper:3.8.3"
           resources:
             requests:
               memory: "512M"
@@ -113,12 +113,12 @@ spec:
               name: prometheus
           env:
             - name: SERVERS
-              value: "1"
+              value: "3"
 
-# See those links for proper startup settings:
-# https://github.com/kow3ns/kubernetes-zookeeper/blob/master/docker/scripts/start-zookeeper
-# https://clickhouse.yandex/docs/en/operations/tips/#zookeeper
-# https://github.com/ClickHouse/ClickHouse/issues/11781
+          # See those links for proper startup settings:
+          # https://github.com/kow3ns/kubernetes-zookeeper/blob/master/docker/scripts/start-zookeeper
+          # https://clickhouse.yandex/docs/en/operations/tips/#zookeeper
+          # https://github.com/ClickHouse/ClickHouse/issues/11781
           command:
             - bash
             - -x

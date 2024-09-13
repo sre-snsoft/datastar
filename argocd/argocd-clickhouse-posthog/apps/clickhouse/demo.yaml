@@ -7,7 +7,7 @@ spec:
     clusters:
       - name: "demo"
         layout:
-          shardsCount: 1
+          shardsCount: 3
           replicasCount: 2
         templates:
           podTemplate: server
