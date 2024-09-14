@@ -33,6 +33,7 @@ argocd app create cloudbeaver \
  --repo https://github.com/ranmaoshu1/datastar.git \
  --path argocd/argocd-clickhouse-posthog/apps/cloudbeaver \
  --dest-server https://kubernetes.default.svc --dest-namespace ${NS}
+
 argocd app sync clickhouse-operator
 argocd app sync prometheus
 argocd app sync grafana

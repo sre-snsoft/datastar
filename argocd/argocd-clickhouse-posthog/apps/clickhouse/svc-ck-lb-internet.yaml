@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: clickhouse-internet
+  namespace: clickhouse
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+  labels:
+    clickhouse.altinity.com/Service: chi
+    clickhouse.altinity.com/app: chop
+    clickhouse.altinity.com/chi: argocd-clickhouse
+    clickhouse.altinity.com/namespace: clickhouse
+spec:
+  loadBalancerClass: service.k8s.aws/nlb
+  ports:
+  - name: http
+    nodePort: 31256
+    port: 8123
+    protocol: TCP
+    targetPort: http
+  - name: tcp
+    nodePort: 32244
+    port: 9000
+    protocol: TCP
+    targetPort: tcp
+  selector:
+    clickhouse.altinity.com/app: chop
+    clickhouse.altinity.com/chi: argocd-clickhouse
+    clickhouse.altinity.com/namespace: clickhouse
+    clickhouse.altinity.com/ready: "yes"
+  sessionAffinity: None
+  type: LoadBalancer
