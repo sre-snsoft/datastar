@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    meta.helm.sh/release-name: ck239
+    meta.helm.sh/release-namespace: clickhouse239
+  creationTimestamp: "2024-09-14T04:44:27Z"
+  finalizers:
+  - service.k8s.aws/resources
+  labels:
+    app.kubernetes.io/component: clickhouse
+    app.kubernetes.io/instance: ck239
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: clickhouse
+    app.kubernetes.io/version: 23.9.2
+    helm.sh/chart: clickhouse-4.0.9
+  name: ck239-clickhouse
+  namespace: clickhouse239
+  resourceVersion: "427359"
+  uid: 9353ecdd-bfea-462d-a651-fae1cd00b613
+spec:
+  allocateLoadBalancerNodePorts: true
+  clusterIP: 172.20.23.249
+  clusterIPs:
+  - 172.20.23.249
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  loadBalancerClass: service.k8s.aws/nlb
+  ports:
+  - name: http
+    nodePort: 31793
+    port: 8123
+    protocol: TCP
+    targetPort: http
+  - name: tcp
+    nodePort: 31632
+    port: 9000
+    protocol: TCP
+    targetPort: tcp
+  - name: tcp-mysql
+    nodePort: 30162
+    port: 9004
+    protocol: TCP
+    targetPort: tcp-mysql
+  - name: tcp-postgresql
+    nodePort: 30153
+    port: 9005
+    protocol: TCP
+    targetPort: tcp-postgresql
+  - name: http-intersrv
+    nodePort: 31290
+    port: 9009
+    protocol: TCP
+    targetPort: http-intersrv
+  - name: http-metrics
+    nodePort: 30229
+    port: 8001
+    protocol: TCP
+    targetPort: http-metrics
+  selector:
+    app.kubernetes.io/component: clickhouse
+    app.kubernetes.io/instance: ck239
+    app.kubernetes.io/name: clickhouse
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer:
+    ingress:
+    - hostname: k8s-clickhou-ck239cli-8c31176045-2b8ba2d898a6c4eb.elb.ap-southeast-1.amazonaws.com
