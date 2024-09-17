@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    meta.helm.sh/release-name: ck239
+    meta.helm.sh/release-namespace: clickhouse239
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+  finalizers:
+  - service.k8s.aws/resources
+  labels:
+    app.kubernetes.io/component: clickhouse
+    app.kubernetes.io/instance: ck239
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: clickhouse
+    app.kubernetes.io/version: 23.9.2
+    helm.sh/chart: clickhouse-4.0.9
+  name: ck239-clickhouse-internet
+  namespace: clickhouse239
+spec:
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  loadBalancerClass: service.k8s.aws/nlb
+  ports:
+  - name: http
+    nodePort: 31794
+    port: 8123
+    protocol: TCP
+    targetPort: http
+  - name: tcp
+    nodePort: 31643
+    port: 9000
+    protocol: TCP
+    targetPort: tcp
+  - name: tcp-mysql
+    nodePort: 30145
+    port: 9004
+    protocol: TCP
+    targetPort: tcp-mysql
+  - name: tcp-postgresql
+    nodePort: 30156
+    port: 9005
+    protocol: TCP
+    targetPort: tcp-postgresql
+  - name: http-intersrv
+    nodePort: 31291
+    port: 9009
+    protocol: TCP
+    targetPort: http-intersrv
+  - name: http-metrics
+    nodePort: 30230
+    port: 8001
+    protocol: TCP
+    targetPort: http-metrics
+  selector:
+    app.kubernetes.io/component: clickhouse
+    app.kubernetes.io/instance: ck239
+    app.kubernetes.io/name: clickhouse
+  sessionAffinity: None
+  type: LoadBalancer
