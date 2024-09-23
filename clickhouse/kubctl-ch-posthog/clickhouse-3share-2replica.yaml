@@ -1,0 +1,71 @@
+apiVersion: "clickhouse.altinity.com/v1"
+kind: "ClickHouseInstallation"
+metadata:
+  name: "ch228"
+  namespace: ch228
+spec:
+  configuration:
+    clusters:
+      - name: "ch228"
+        layout:
+          shardsCount: 3
+          replicasCount: 2
+        templates:
+          podTemplate: clickhouse-stable
+          dataVolumeClaimTemplate: clickhouse-data-volume
+          serviceTemplate: svc-template
+    zookeeper:
+      nodes:
+        - host: zookeeper
+          port: 2181
+    users:
+      root/password: VXNzX61I2JSO
+      root/profile: default
+      root/quota: default
+      root/access_management: 1
+      root/networks/ip:
+        - 0.0.0.0/0
+        - ::/0
+    profiles:
+      demoreadonly/readonly: "1"
+      # server level settings can be set here
+      demo/data_type_default_nullable: 1 # data types in column definitions are set to Nullable by default
+      demo/insert_distributed_sync: 1 # Data is inserted in synchronous mode
+      demo/mutations_sync: 2 # query waits for all mutations to complete on all replicas
+      demo/parallel_distributed_insert_select: 2 # SELECT and INSERT will be executed on each shard in parallel
+      demo/distributed_product_mode: allow # Allows the use of these types of subqueries
+    files:
+      config.d/log_rotation.xml: |-
+        <clickhouse>
+            <logger>
+                <level>information</level>
+                <log>/var/log/clickhouse-server/clickhouse-server.log</log>
+                <errorlog>/var/log/clickhouse-server/clickhouse-server.err.log</errorlog>
+                <size>100M</size>
+                <count>5</count>
+                <console>1</console>
+            </logger>
+        </clickhouse>
+  templates:
+    podTemplates:
+      - name: clickhouse-stable
+        spec:
+          containers:
+            - name: clickhouse
+              image: clickhouse/clickhouse-server:22.8.11.15
+              resources:
+                requests:
+                  memory: "1024Mi"
+                  cpu: "500m"
+                limits:
+                  memory: "4096Mi"
+                  cpu: "2000m"
+    volumeClaimTemplates:
+      - name: clickhouse-data-volume
+        spec:
+          storageClassName: gp2
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 50Gi
