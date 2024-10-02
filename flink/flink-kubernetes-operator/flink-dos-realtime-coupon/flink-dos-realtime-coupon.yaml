@@ -1,0 +1,27 @@
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: flink-dos-realtime-coupon
+  namespace: flink
+spec:
+  image: 545009824097.dkr.ecr.ap-southeast-1.amazonaws.com/flink:dos_realtime_coupon_v1
+  flinkVersion: v1_19
+  flinkConfiguration:
+    taskmanager.numberOfTaskSlots: "2"
+  serviceAccount: flink
+  jobManager:
+    resource:
+      memory: "4096m"
+      cpu: 2
+  taskManager:
+    resource:
+      memory: "4096m"
+      cpu: 2
+  job:
+    jarURI: local:///opt/flink/dos_realtime_coupon-0.1.1-SNAPSHOT.jar
+    parallelism: 2
+    upgradeMode: stateless
+
+#uat-dg-flink-super-jackpot-chances
+# EFS
+#

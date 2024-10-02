@@ -1,0 +1,16 @@
+2024-09-25T01:19:50.380522766Z stdout F 09:19:50 1|clientAPIServer  | {"message":"[INFO] [TraceID: 281b3f80fed7af925ec6df100efd375d] [SpanID: f7e243221ffa84c7] refreshed configStorage\n","timestamp":"2024-09-25T01:19:50.376Z","type":"out","process_id":1,"app_name":"clientAPIServer"}
+2024-09-25T01:19:50.392782498Z stdout F 09:19:50 1|clientAPIServer  | You have triggered an unhandledRejection, you may have forgotten to catch a Promise rejection:
+2024-09-25T01:19:50.393047882Z stdout F 09:19:50 1|clientAPIServer  | TypeError: Cannot read properties of null (reading '_id')
+2024-09-25T01:19:50.393255927Z stdout F 09:19:50 1|clientAPIServer  |     at Object.notifyGameInfo (/app/Server/db_modules/dbGame.js:1597:30)
+2024-09-25T01:19:50.393470261Z stdout F 09:19:50 1|clientAPIServer  |     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2024-09-25T01:19:50.409703544Z stdout F 09:19:50 3|clientAPIServer  | {"message":"[INFO] [TraceID: 42ca64f93436a875a18557ae788ef9da] [SpanID: 722e3a8a4c3a0701] refreshed configStorage\n","timestamp":"2024-09-25T01:19:50.409Z","type":"out","process_id":3,"app_name":"clientAPIServer"}
+2024-09-25T01:19:50.412723086Z stdout F 09:19:50 3|clientAPIServer  | You have triggered an unhandledRejection, you may have forgotten to catch a Promise rejection:
+2024-09-25T01:19:50.412751537Z stdout F 09:19:50 3|clientAPIServer  | TypeError: Cannot read properties of null (reading '_id')
+2024-09-25T01:19:50.412756267Z stdout F 09:19:50 3|clientAPIServer  |     at Object.notifyGameInfo (/app/Server/db_modules/dbGame.js:1597:30)
+2024-09-25T01:19:50.412766687Z stdout F 09:19:50 3|clientAPIServer  |     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2024-09-25T01:19:50.449413708Z stdout F 09:19:50 2|clientAPIServer  | {"message":"[INFO] [TraceID: 022ea755d1c97e8d3a3271d3e0c3f616] [SpanID: 3dde08ac95117a57] refreshed configStorage\n","timestamp":"2024-09-25T01:19:50.446Z","type":"out","process_id":2,"app_name":"clientAPIServer"}
+2024-09-25T01:19:50.45486091Z stdout F 09:19:50 2|clientAPIServer  | You have triggered an unhandledRejection, you may have forgotten to catch a Promise rejection:
+2024-09-25T01:19:50.454893631Z stdout F 09:19:50 2|clientAPIServer  | TypeError: Cannot read properties of null (reading '_id')
+2024-09-25T01:19:50.454898461Z stdout F 09:19:50 2|clientAPIServer  |     at Object.notifyGameInfo (/app/Server/db_modules/dbGame.js:1597:30)
+2024-09-25T01:19:50.454901911Z stdout F 09:19:50 2|clientAPIServer  |     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2024-09-25T01:19:56.088932681Z stdout F 09:19:56 3|clientAPIServer  | {"message":"[LOG] [TraceID: ] [SpanID: ] Close the connection 1001 <Buffer >\n","timestamp":"2024-09-25T01:19:56.088Z","type":"out","process_id":3,"app_name":"clientAPIServer"}
