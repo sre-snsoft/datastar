@@ -161,6 +161,13 @@ defaultConfiguration:
 
     kubernetes.operator.reconcile.interval: 15 s
     kubernetes.operator.observer.progress-check.interval: 5 s
+    metrics.reporter.promgateway.factory.class: org.apache.flink.metrics.prometheus.PrometheusPushGatewayReporterFactory
+    metrics.reporter.promgateway.hostUrl: http://a41093c9812b64ed7957852531a4ad74-1203801685.ap-southeast-1.elb.amazonaws.com:9091
+    metrics.reporter.promgateway.jobName: flink
+    metrics.reporter.promgateway.randomJobNameSuffix: true
+    metrics.reporter.promgateway.deleteOnShutdown: false
+    metrics.reporter.promgateway.interval: 60 SECONDS
+
   log4j-operator.properties: |+
     # Flink Operator Logging Overrides
     # rootLogger.level = DEBUG

@@ -4,7 +4,7 @@ metadata:
   name: flink-dos-realtime-coupon
   namespace: flink
 spec:
-  image: 545009824097.dkr.ecr.ap-southeast-1.amazonaws.com/flink:dos_realtime_coupon_v1
+  image: 545009824097.dkr.ecr.ap-southeast-1.amazonaws.com/flink:dos_realtime_coupon_v3
   flinkVersion: v1_19
   flinkConfiguration:
     taskmanager.numberOfTaskSlots: "2"
