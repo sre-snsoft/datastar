@@ -2,6 +2,8 @@ global:
   cloud: aws
   clusterName: cpms-uat
   deploymentEnvironment: uat
+namespace: "signoz-otel"
+
 otelCollectorEndpoint: otel-collector.signoz-uat.me:4317
 otelInsecure: true
 presets:

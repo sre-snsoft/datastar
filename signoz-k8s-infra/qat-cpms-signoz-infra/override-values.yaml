@@ -4,6 +4,8 @@ global:
   deploymentEnvironment: qat
 otelCollectorEndpoint: otel-collector.signoz-qat.me:4317
 otelInsecure: true
+namespace: "signoz-otel"
+
 presets:
   otlpExporter:
     enabled: true
