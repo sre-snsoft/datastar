@@ -1,0 +1,284 @@
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: examplejob-jm-ue1a
+  namespace: examplejob
+  labels:
+    deploy.artifact.io/kind: 'flink'
+    deploy.artifact.io/name: 'examplejob'
+spec:
+  image: flink:1.18.1
+  imagePullPolicy: Always
+  flinkVersion: v1_18
+  flinkConfiguration:
+    jobmanager.memory.process.size: "2g"
+    kubernetes.jobmanager.memory.limit-factor: "1.5"
+    kubernetes.jobmanager.cpu.amount: "1"
+    kubernetes.jobmanager.cpu.limit-factor: "8"
+    taskmanager.memory.process.size: "3g"
+    kubernetes.taskmanager.memory.limit-factor: "1.33"
+    kubernetes.taskmanager.cpu.amount: "1"
+    kubernetes.taskmanager.cpu.limit-factor: "8"
+    parallelism.default: "4"
+    taskmanager.data.port: "12000"
+    high-availability.storageDir: s3p://s3_bucket/examplejob/ha
+    jobmanager.archive.fs.dir: s3p://s3_bucket/examplejob/completed-jobs
+    historyserver.archive.fs.dir: s3p://s3_bucket/examplejob/completed-jobs
+    state.backend.type: hashmap
+    state.checkpoints.dir: s3p://s3_bucket/examplejob/checkpoint/
+    state.savepoints.dir: s3p://s3_bucket/examplejob/savepoint/
+
+  serviceAccount: examplejob
+  podTemplate:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: pod-template
+  jobManager:
+    podTemplate:
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        name: examplejob-jm-ue1a
+        namespace: examplejob
+        labels:
+          deploy.artifact.io/kind: 'flink'
+          deploy.artifact.io/name: 'examplejob'
+      spec:
+        initContainers:
+          - name: examplejob-pkg
+            image: aws-cli:latest
+            command:
+              - /bin/sh
+              - -c
+              - |
+                set -e
+                aws s3 cp s3://job_jar_bucket/examplejob/1_0_0.jar /opt/lib/flink-job.jar
+            volumeMounts:
+              - name: examplejob-pkg
+                mountPath: /opt/lib
+        containers:
+          # Do not change the main container name
+          - name: flink-main-container
+            ports:
+              - name: rpc
+                containerPort: 6123
+              - name: blob
+                containerPort: 6124
+              - name: ui
+                containerPort: 8081
+              - name: metric
+                containerPort: 9249
+            env:
+              - name: module
+                value: 'examplejob'
+              - name: ENV
+                value: 'prod'
+              - name: FLINK_VER
+                value: '1.18.1'
+            readinessProbe:
+              httpGet:
+                path: /
+                port: 8081
+              initialDelaySeconds: 30
+            volumeMounts:
+              - name: examplejob-pkg
+                mountPath: /opt/lib
+          - name: prometheus
+            image: prom/prometheus
+            imagePullPolicy: Always
+            command:
+              - /bin/sh
+              - -c
+              - |
+                rm -rf /prometheus/ > /dev/null 2>&1
+                /bin/prometheus \
+                  --config.file=/etc/prometheus/prometheus.yaml \
+                  --storage.tsdb.path=/prometheus/ \
+                  --log.level=info \
+                  --web.enable-lifecycle \
+                  --web.listen-address=:9097 \
+                  --storage.tsdb.retention.time=2h
+            livenessProbe:
+              failureThreshold: 6
+              httpGet:
+                path: '/-/healthy'
+                port: 9097
+                scheme: HTTP
+              initialDelaySeconds: 30
+              periodSeconds: 5
+              successThreshold: 1
+              timeoutSeconds: 3
+            readinessProbe:
+              failureThreshold: 12
+              httpGet:
+                path: '/-/ready'
+                port: 9097
+                scheme: HTTP
+            lifecycle:
+              preStop:
+                exec:
+                  command:
+                    - /bin/sh
+                    - -c
+                    - >
+                      'sleep 17; /bin/pkill prometheus'
+            securityContext:
+              allowPrivilegeEscalation: false
+              runAsUser: 1000
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            ports:
+              - containerPort: 9097
+                name: metrics
+                protocol: TCP
+            resources:
+              requests:
+                cpu: '50m'
+                memory: '100Mi'
+              limits:
+                cpu: '150m'
+                memory: '200Mi'
+            volumeMounts:
+              - name: prom-conf
+                mountPath: '/etc/prometheus/'
+              - name: prom-rule
+                mountPath: '/etc/prometheus/rules/'
+              - name: prom-store
+                mountPath: '/prometheus/'
+        volumes:
+          - name: prom-conf
+            configMap:
+              name: prom-conf
+          - name: prom-rule
+            configMap:
+              name: prom-rule
+          - name: prom-store
+            emptyDir: {}
+
+          - name: examplejob-pkg
+            emptyDir: {}
+
+  taskManager:
+    podTemplate:
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        name: examplejob-tm-ue1a
+        namespace: examplejob
+        labels:
+          deploy.artifact.io/kind: 'flink'
+          deploy.artifact.io/name: 'examplejob'
+      spec:
+        serviceAccountName: examplejob
+        initContainers:
+          - name: examplejob-pkg
+            image: aws-cli:latest
+            command:
+              - /bin/sh
+              - -c
+              - |
+                set -e
+                aws s3 cp s3://job_jar_bucket/examplejob/1_0_0.jar /opt/lib/flink-job.jar
+            volumeMounts:
+              - name: examplejob-pkg
+                mountPath: /opt/lib
+        containers:
+          - name: flink-main-container
+            ports:
+              - name: data
+                containerPort: 6121
+              - name: rpc
+                containerPort: 6122
+              - name: metric
+                containerPort: 9249
+            env:
+              - name: module
+                value: 'examplejob'
+              - name: ENV
+                value: 'prod'
+              - name: FLINK_VER
+                value: '1.18.1'
+            volumeMounts:
+              - name: examplejob-pkg
+                mountPath: /opt/lib
+          - name: prometheus
+            image: prom/prometheus
+            imagePullPolicy: Always
+            command:
+              - /bin/sh
+              - -c
+              - |
+                rm -rf /prometheus/ > /dev/null 2>&1
+                /bin/prometheus \
+                  --config.file=/etc/prometheus/prometheus.yaml \
+                  --storage.tsdb.path=/prometheus/ \
+                  --log.level=info \
+                  --web.enable-lifecycle \
+                  --web.listen-address=:9097 \
+                  --storage.tsdb.retention.time=2h
+            livenessProbe:
+              failureThreshold: 6
+              httpGet:
+                path: '/-/healthy'
+                port: 9097
+                scheme: HTTP
+              initialDelaySeconds: 30
+              periodSeconds: 5
+              successThreshold: 1
+              timeoutSeconds: 3
+            readinessProbe:
+              failureThreshold: 12
+              httpGet:
+                path: '/-/ready'
+                port: 9097
+                scheme: HTTP
+            lifecycle:
+              preStop:
+                exec:
+                  command:
+                    - /bin/sh
+                    - -c
+                    - >
+                      'sleep 17; /bin/pkill prometheus'
+            securityContext:
+              allowPrivilegeEscalation: false
+              runAsUser: 1000
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            ports:
+              - containerPort: 9097
+                name: metrics
+                protocol: TCP
+            resources:
+              requests:
+                cpu: '50m'
+                memory: '100Mi'
+              limits:
+                cpu: '150m'
+                memory: '200Mi'
+            volumeMounts:
+              - name: prom-conf
+                mountPath: '/etc/prometheus/'
+              - name: prom-rule
+                mountPath: '/etc/prometheus/rules/'
+              - name: prom-store
+                mountPath: '/prometheus/'
+        volumes:
+          - name: prom-conf
+            configMap:
+              name: prom-conf
+          - name: prom-rule
+            configMap:
+              name: prom-rule
+          - name: prom-store
+            emptyDir: {}
+          - name: examplejob-pkg
+            emptyDir: {}
+
+  job:
+    jarURI: local:///opt/lib/flink-job.jar
+    parallelism: 4
+    allowNonRestoredState: False
+    upgradeMode: 'savepoint'
+    state: 'running'

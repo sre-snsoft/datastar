@@ -1,0 +1,13 @@
+FROM --platform=linux/amd64 flink:1.19.0
+#添加运行jar包
+ADD dos_super_jackpot-0.1.1-SNAPSHOT.jar /opt/flink/dos_super_jackpot-0.1.1-SNAPSHOT.jar
+
+#添加依赖包
+#AWS 读取配置
+ADD aws-kinesisanalytics-runtime-1.2.0.jar /opt/flink/lib/
+# 监控依赖
+ADD flink-metrics-prometheus-1.19.0.jar /opt/flink/lib/
+# S3依赖
+ADD flink-s3-fs-hadoop-1.19.0.jar /opt/flink/lib/
+ADD flink-s3-fs-presto-1.19.0.jar /opt/flink/lib/
+

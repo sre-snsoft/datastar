@@ -1,0 +1,151 @@
+# ConfigMap for Flink configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: uat-cp-flink-coupon-process-config
+  namespace: flink
+data:
+  application_properties.json: |-
+    [{"PropertyGroupId":"RealtimeCoupon","PropertyMap":{
+      "ckp.interval": 5000,
+      "coupon.job.window-process": "process",
+      "cp.pulsar.consumer.name": "dos-flink-bet-cousume-coupon-process-uat8",
+      "cp.pulsar.destination.service.url": "pulsar://pulsar-proxy-dos-2.dos99.me:6650",
+      "cp.pulsar.service.url":"pulsar://pulsar-proxy-dos.dos99.me:6650",
+      "cp.pulsar.subscription.name": "dos-flink-bet-consume-coupon-process-uat8",
+      "dos.coupon.topic":"dos_flink_realtime_coupon",
+      "dos.factory.identifier":"CP_Coupon",
+      "dos.sink.pulsar.producer":"dos-cp-flink-coupon-producer-process",
+      "enable.debug.print.log":false,
+      "enable.incremental.checkpoints":true,
+      "enable.unaligned.checkpoints":true,
+      "keyBy.parallelism": 128,
+      "mongo.connection.string":"mongodb+srv://qatDOsDevUs3r:xauxpSmaTRmY4EUE@qat-stable-dos-backoffi-pri.0ltpc.mongodb.net/dosdb?retryWrites=true&w=majority&appName=qat-stable-DOS-backoffice",
+      "redis.cluster":true,
+      "redis.host":"uat-dos-flink-redis.vvnt7i.clustercfg.apse1.cache.amazonaws.com",
+      "sink.parallelism":6,
+      "starting.offsets":"latest-offset",
+      "state.backend":"rocksdb"
+    }}]
+---
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: uat-cp-flink-coupon-process
+  namespace: flink
+  labels:
+    deploy.artifact.io/kind: 'flink'
+    deploy.artifact.io/name: 'uat-cp-flink-coupon-process'
+spec:
+  image: 545009824097.dkr.ecr.ap-southeast-1.amazonaws.com/flink:uat-cp-flink-coupon-v2
+  imagePullPolicy: Always
+  flinkVersion: v1_19
+  flinkConfiguration:
+    jobmanager.memory.process.size: "1g"
+    kubernetes.jobmanager.memory.limit-factor: "1.5"
+    kubernetes.jobmanager.cpu.amount: "1"
+    kubernetes.jobmanager.cpu.limit-factor: "8"
+    taskmanager.memory.process.size: "1g"
+    kubernetes.taskmanager.memory.limit-factor: "1.33"
+    kubernetes.taskmanager.cpu.amount: "1"
+    kubernetes.taskmanager.cpu.limit-factor: "8"
+    parallelism.default: "4"
+    taskmanager.data.port: "12000"
+    high-availability.storageDir: s3://flink-dos-qat-vpc-tfstate/uat-cp-flink-coupon-process/ha
+    jobmanager.archive.fs.dir: s3://flink-dos-qat-vpc-tfstate/uat-cp-flink-coupon-process/completed-jobs
+    historyserver.archive.fs.dir: s3://flink-dos-qat-vpc-tfstate/uat-cp-flink-coupon-process/completed-jobs
+    state.backend.type: hashmap
+    state.checkpoints.dir: s3://flink-dos-qat-vpc-tfstate/uat-cp-flink-coupon-process/checkpoint/
+    state.savepoints.dir: s3://flink-dos-qat-vpc-tfstate/uat-cp-flink-coupon-process/savepoint/
+
+  serviceAccount: flink
+  podTemplate:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: pod-template
+  jobManager:
+    podTemplate:
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        name: uat-cp-flink-coupon-process-jm
+        namespace: flink
+        labels:
+          deploy.artifact.io/kind: 'flink'
+          deploy.artifact.io/name: 'uat-cp-flink-coupon-process'
+      spec:
+        containers:
+          # Do not change the main container name
+          - name: flink-main-container
+            ports:
+              - name: rpc
+                containerPort: 6123
+              - name: blob
+                containerPort: 6124
+              - name: ui
+                containerPort: 8081
+              - name: metric
+                containerPort: 9249
+            env:
+              - name: module
+                value: 'uat-cp-flink-coupon-process'
+              - name: ENV
+                value: 'qat'
+              - name: FLINK_VER
+                value: '1.19.0'
+            readinessProbe:
+              httpGet:
+                path: /
+                port: 8081
+              initialDelaySeconds: 30
+            volumeMounts:
+              - name: uat-cp-flink-coupon-process-config
+                mountPath: /etc/flink
+        volumes:
+          - name: uat-cp-flink-coupon-process-config
+            configMap:
+              name: uat-cp-flink-coupon-process-config
+
+  taskManager:
+    podTemplate:
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        name: uat-cp-flink-coupon-process-tm
+        namespace: flink
+        labels:
+          deploy.artifact.io/kind: 'flink'
+          deploy.artifact.io/name: 'uat-cp-flink-coupon-process'
+      spec:
+        serviceAccountName: uat-cp-flink-coupon-process
+        containers:
+          - name: flink-main-container
+            ports:
+              - name: data
+                containerPort: 6121
+              - name: rpc
+                containerPort: 6122
+              - name: metric
+                containerPort: 9249
+            env:
+              - name: module
+                value: 'uat-cp-flink-coupon-process'
+              - name: ENV
+                value: 'qat'
+              - name: FLINK_VER
+                value: '1.19.0'
+            volumeMounts:
+              - name: uat-cp-flink-coupon-process-config
+                mountPath: /etc/flink
+        volumes:
+          - name: uat-cp-flink-coupon-process-config
+            configMap:
+              name: uat-cp-flink-coupon-process-config
+
+  job:
+    jarURI: local:///opt/flink/dos_realtime_coupon-0.2.1-snapshot.jar
+    parallelism: 4
+    allowNonRestoredState: False
+    upgradeMode: 'savepoint'
+    state: 'running'

@@ -1,0 +1,149 @@
+# ConfigMap for Flink configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dp-cp-flink-coupon-process-config
+  namespace: flink
+data:
+  application_properties.json: |-
+    [{"PropertyGroupId":"RealtimeCoupon",
+    "PropertyMap":{
+      "ckp.interval": 30000,
+      "coupon.job.window-process": "process",
+      "dos.coupon.topic": "dos-realtime-coupon-loadtest",
+      "dos.factory.identifier": "DP_Coupon",
+      "enable.unaligned.checkpoints": true,
+      "kafka.bootstrap.servers":"b-2.mskuattidbtoodps.bw2373.c2.kafka.ap-southeast-1.amazonaws.com:9092,b-1.mskuattidbtoodps.bw2373.c2.kafka.ap-southeast-1.amazonaws.com:9092,b-3.mskuattidbtoodps.bw2373.c2.kafka.ap-southeast-1.amazonaws.com:9092",
+      "kafka.coupon.bootstrap.servers": "b-3.mskuatmms.kaww3z.c2.kafka.ap-southeast-1.amazonaws.com:9092,b-2.mskuatmms.kaww3z.c2.kafka.ap-southeast-1.amazonaws.com:9092,b-1.mskuatmms.kaww3z.c2.kafka.ap-southeast-1.amazonaws.com:9092",
+      "kafka.group.id":"dp-dos-bet-records-coupon-process-group-id",
+      "kafka.topic":"game_order_bill_loadtest",
+      "kafka.transactional.id.prefix":"dos-flink-coupon-daily-producer-pressure-test-4",
+      "keyBy.parallelism":128,
+      "mongo.connection.string":"mongodb+srv://qatDOsDevUs3r:xauxpSmaTRmY4EUE@qat-stable-dos-backoffi-pri.0ltpc.mongodb.net/dosdb?retryWrites=true&w=majority&appName=qat-stable-DOS-backoffice",
+      "redis.cluster": true,
+      "redis.host":"uat-dos-flink-redis.vvnt7i.clustercfg.apse1.cache.amazonaws.com",
+      "sink.parallelism": 6,
+      "source.parallelism":12}
+    }]
+---
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: dp-cp-flink-coupon-process
+  namespace: flink
+  labels:
+    deploy.artifact.io/kind: 'flink'
+    deploy.artifact.io/name: 'dp-cp-flink-coupon-process'
+spec:
+  image: 545009824097.dkr.ecr.ap-southeast-1.amazonaws.com/flink:uat-cp-flink-coupon-v2
+  imagePullPolicy: Always
+  flinkVersion: v1_19
+  flinkConfiguration:
+    jobmanager.memory.process.size: "1g"
+    kubernetes.jobmanager.memory.limit-factor: "1.5"
+    kubernetes.jobmanager.cpu.amount: "1"
+    kubernetes.jobmanager.cpu.limit-factor: "8"
+    taskmanager.memory.process.size: "1g"
+    kubernetes.taskmanager.memory.limit-factor: "1.33"
+    kubernetes.taskmanager.cpu.amount: "1"
+    kubernetes.taskmanager.cpu.limit-factor: "8"
+    parallelism.default: "4"
+    taskmanager.data.port: "12000"
+    high-availability.storageDir: s3://flink-dos-qat-vpc-tfstate/dp-cp-flink-coupon-process/ha
+    jobmanager.archive.fs.dir: s3://flink-dos-qat-vpc-tfstate/dp-cp-flink-coupon-process/completed-jobs
+    historyserver.archive.fs.dir: s3://flink-dos-qat-vpc-tfstate/dp-cp-flink-coupon-process/completed-jobs
+    state.backend.type: hashmap
+    state.checkpoints.dir: s3://flink-dos-qat-vpc-tfstate/dp-cp-flink-coupon-process/checkpoint/
+    state.savepoints.dir: s3://flink-dos-qat-vpc-tfstate/dp-cp-flink-coupon-process/savepoint/
+
+  serviceAccount: flink
+  podTemplate:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: pod-template
+  jobManager:
+    podTemplate:
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        name: dp-cp-flink-coupon-process-jm
+        namespace: flink
+        labels:
+          deploy.artifact.io/kind: 'flink'
+          deploy.artifact.io/name: 'dp-cp-flink-coupon-process'
+      spec:
+        containers:
+          # Do not change the main container name
+          - name: flink-main-container
+            ports:
+              - name: rpc
+                containerPort: 6123
+              - name: blob
+                containerPort: 6124
+              - name: ui
+                containerPort: 8081
+              - name: metric
+                containerPort: 9249
+            env:
+              - name: module
+                value: 'dp-cp-flink-coupon-process'
+              - name: ENV
+                value: 'qat'
+              - name: FLINK_VER
+                value: '1.19.0'
+            readinessProbe:
+              httpGet:
+                path: /
+                port: 8081
+              initialDelaySeconds: 30
+            volumeMounts:
+              - name: dp-cp-flink-coupon-process-config
+                mountPath: /etc/flink
+        volumes:
+          - name: dp-cp-flink-coupon-process-config
+            configMap:
+              name: dp-cp-flink-coupon-process-config
+
+  taskManager:
+    podTemplate:
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        name: dp-cp-flink-coupon-process-tm
+        namespace: flink
+        labels:
+          deploy.artifact.io/kind: 'flink'
+          deploy.artifact.io/name: 'dp-cp-flink-coupon-process'
+      spec:
+        serviceAccountName: dp-cp-flink-coupon-process
+        containers:
+          - name: flink-main-container
+            ports:
+              - name: data
+                containerPort: 6121
+              - name: rpc
+                containerPort: 6122
+              - name: metric
+                containerPort: 9249
+            env:
+              - name: module
+                value: 'dp-cp-flink-coupon-process'
+              - name: ENV
+                value: 'qat'
+              - name: FLINK_VER
+                value: '1.19.0'
+            volumeMounts:
+              - name: dp-cp-flink-coupon-process-config
+                mountPath: /etc/flink
+        volumes:
+          - name: dp-cp-flink-coupon-process-config
+            configMap:
+              name: dp-cp-flink-coupon-process-config
+
+  job:
+    jarURI: local:///opt/flink/dos_realtime_coupon-0.2.1-snapshot.jar
+    parallelism: 4
+    allowNonRestoredState: False
+    upgradeMode: 'savepoint'
+    state: 'running'
