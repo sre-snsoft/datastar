@@ -6,6 +6,6 @@ read
 set -x
 argocd app create signoz-k8s-infra \
  --repo https://github.com/sre-snsoft/datastar.git \
- --path signoz-k8s-infra/uat-cpms-signoz-infra \
+ --path signoz-k8s-infra/qat-cpms-signoz-infra \
  --file override-values.yaml \
  --dest-server https://kubernetes.default.svc --dest-namespace ${NS}
