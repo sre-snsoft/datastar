@@ -1,0 +1,26 @@
+global:
+  cloud: aws
+  clusterName: fpms-uat-terraform
+  deploymentEnvironment: uat
+namespace: "signoz-otel"
+
+otelCollectorEndpoint: otel-collector.signoz-uat.me:4317
+otelInsecure: true
+presets:
+  otlpExporter:
+    enabled: true
+  loggingExporter:
+    enabled: false
+  resourceDetection:
+    detectors:
+      - eks
+      - system
+  logsCollection:
+    enabled: true
+    whitelist:
+      enabled: true
+      signozLogs: false
+      namespaces:
+        - fpms
+        - sms
+        - fpms-st
