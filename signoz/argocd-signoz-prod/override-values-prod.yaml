@@ -350,7 +350,7 @@ clickhouse:
     # -- Whether to enable S3 cold storage
     enabled: false
     # -- Reserve free space on default disk (in bytes)
-    # Default value is 10MiB
+    # Default value is 10MiB 
     defaultKeepFreeSpaceBytes: "10485760"
     # -- Type of cold storage: s3 or gcs
     type: s3
