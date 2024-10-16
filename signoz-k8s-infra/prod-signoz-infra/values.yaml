@@ -11,7 +11,7 @@ global:
   clusterDomain: cluster.local
   # -- Kubernetes cluster name
   # It is used to attached to telemetry data via resource detection processor
-  clusterName: "cpms-qat-graviton"
+  clusterName: "signoz-prod"
   # -- Deployment environment to be attached to telemetry data
   deploymentEnvironment: "qat"
   # -- Kubernetes cluster cloud provider along with distribution if any.
@@ -28,14 +28,14 @@ fullnameOverride: ""
 enabled: true
 
 # -- Name of the K8s cluster. Used by OtelCollectors to attach in telemetry data.
-clusterName: "cpms-qat"
+clusterName: "signoz-prod"
 
 # -- Endpoint/IP Address of the SigNoz or any other OpenTelemetry backend.
 # Set it to `ingest.signoz.io:4317` for SigNoz SaaS.
 #
 # If set to null and the chart is installed as dependency, it will attempt
 # to autogenerate the endpoint of SigNoz OtelCollector.
-otelCollectorEndpoint: otel-collector.signoz-qat.me:4317
+otelCollectorEndpoint: signoz-otel-collector-prod.fpms10.me:4317
 
 # -- Whether the OTLP endpoint is insecure.
 # Set this to false, in case of secure OTLP endpoint.
