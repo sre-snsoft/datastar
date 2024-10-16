@@ -1,0 +1,24 @@
+global:
+  cloud: aws
+  clusterName: signoz-prod
+  deploymentEnvironment: prod
+namespace: "signoz-otel"
+
+otelCollectorEndpoint: signoz-otel-collector-prod.fpms10.me:4317
+otelInsecure: true
+presets:
+  otlpExporter:
+    enabled: true
+  loggingExporter:
+    enabled: false
+  resourceDetection:
+    detectors:
+      - eks
+      - system
+  logsCollection:
+    enabled: false
+    whitelist:
+      enabled: true
+      signozLogs: false
+      namespaces:
+        - signoz-infra
