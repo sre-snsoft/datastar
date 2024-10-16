@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: telegraf-cloudwatch2prometheus-config
+  namespace: monitor
+data:
+  telegraf.conf: |
+    [global_tags]
+      environment = "qat"
+    # Configuration for the Telegraf agent  
+    [agent]
+      interval = "1m"
+      round_interval = true
+    [[inputs.cloudwatch]]
+      region = "ap-southeast-1"
+      role_arn = "arn:aws:iam::545009824097:role/flink-dos-qat-vpc-eks-node-group-role"
+      period = "1m"
+      delay = "1m"
+      interval = "1m"
+      namespaces = ["AWS/KinesisAnalytics"]
+
+    [[outputs.prometheus_client]]
+      listen = ":9126"
+      path = "/metrics"
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: telegraf-cloudwatch2prometheus
+  namespace: monitor
+spec:
+  selector:
+    matchLabels:
+      name: telegraf-cloudwatch2prometheus
+      namespace: monitor
+  template:
+    metadata:
+      labels:
+        name: telegraf-cloudwatch2prometheus
+        namespace: monitor
+    spec:
+      containers:
+        - name: telegraf-cloudwatch2prometheus
+          image: telegraf:latest
+          volumeMounts:
+            - mountPath: /etc/telegraf
+              name: telegraf-cloudwatch2prometheus-config
+      volumes:
+        - name: telegraf-cloudwatch2prometheus-config
+          configMap:
+            name: telegraf-cloudwatch2prometheus-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: telegraf-cloudwatch2prometheus-service
+  namespace: monitor
+spec:
+  selector:
+    name: telegraf-cloudwatch2prometheus
+  ports:
+    - protocol: TCP
+      port: 9126
+      targetPort: 9126
+  type: ClusterIP

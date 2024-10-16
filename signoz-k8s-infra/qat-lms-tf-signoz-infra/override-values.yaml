@@ -1,6 +1,6 @@
 global:
   cloud: aws
-  clusterName: cpms-qat
+  clusterName: lms-qat-tf
   deploymentEnvironment: qat
 otelCollectorEndpoint: otel-collector.signoz-qat.me:4317
 otelInsecure: true
@@ -22,3 +22,4 @@ presets:
       signozLogs: false
       namespaces:
         - lms-qat
+        - signoz-test

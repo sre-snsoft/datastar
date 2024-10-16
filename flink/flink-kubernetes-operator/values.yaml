@@ -167,6 +167,8 @@ defaultConfiguration:
     metrics.reporter.promgateway.randomJobNameSuffix: true
     metrics.reporter.promgateway.deleteOnShutdown: false
     metrics.reporter.promgateway.interval: 60 SECONDS
+    s3.access-key: AKIAX5ZI56FQZWYTHLFL
+    s3.secret-key: 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
 
   log4j-operator.properties: |+
     # Flink Operator Logging Overrides
