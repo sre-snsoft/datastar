@@ -18,7 +18,7 @@ global:
   # example: `aws`, `azure`, `gcp`, `gcp/autogke`, `hcloud`, `other`
   # Based on the cloud, storage class for the persistent volume is selected.
   # When set to 'aws' or 'gcp' along with `installCustomStorageClass` enabled, then new expandible storage class is created.
-  cloud: other
+  cloud: aws
 
 # -- SigNoz chart name override
 nameOverride: ""
@@ -97,7 +97,7 @@ clickhouse:
       tag: 3.7.1
 
     # -- Replica count for zookeeper
-    replicaCount: 1
+    replicaCount: 3
 
     # -- Whether to install zookeeper into a different namespace than the parent
     namespaceOverride: ""
@@ -145,7 +145,7 @@ clickhouse:
   # -- Image Registry Secret Names for ClickHouse.
   # If global.imagePullSecrets is set as well, it will merged.
   imagePullSecrets: []
-    # - "clickhouse-pull-secret"
+  # - "clickhouse-pull-secret"
 
   # -- ClickHouse instance annotations.
   annotations: {}
@@ -165,7 +165,7 @@ clickhouse:
     # -- Annotations to use by service associated to Clickhouse instance
     annotations: {}
     # -- Service Type: LoadBalancer (allows external access) or NodePort (more secure, no extra cost)
-    type: ClusterIP
+    type: LoadBalancer
     # -- Clickhouse HTTP port
     httpPort: 8123
     # -- Clickhouse TCP port
@@ -179,7 +179,7 @@ clickhouse:
   externalZookeeper: {}
     # servers:
     # - host: signoz-signoz-zookeeper
-    #   port: 2181
+  #   port: 2181
 
   # -- Node selector for settings for clickhouse pod
   nodeSelector: {}
@@ -248,7 +248,7 @@ clickhouse:
       - ReadWriteOnce
 
     # -- Persistent Volume size
-    size: 100Gi
+    size: 3Ti
 
   # -- Clickhouse user profile configuration.
   # You can use this to override profile settings, for example
@@ -305,8 +305,8 @@ clickhouse:
   # section on clusters and layouts.
   #
   layout:
-    shardsCount: 1
-    replicasCount: 1
+    shardsCount: 6
+    replicasCount: 2
 
   # -- ClickHouse settings configuration.
   # You can use this to override settings, for example `prometheus/port: 9363`
@@ -343,15 +343,15 @@ clickhouse:
     #   topologyKey: kubernetes.io/hostname
     # - type: MaxNumberPerNode
     #   number: 2
-    #   topologyKey: kubernetes.io/hostname
+  #   topologyKey: kubernetes.io/hostname
 
   # Cold storage configuration
   coldStorage:
     # -- Whether to enable S3 cold storage
     enabled: false
     # -- Reserve free space on default disk (in bytes)
-    # Default value is 10MiB
-    defaultKeepFreeSpaceBytes: "10485760"
+    # Default value is 10MiB，prod change to 100Mb
+    defaultKeepFreeSpaceBytes: "104857600"
     # -- Type of cold storage: s3 or gcs
     type: s3
     # -- Endpoint for S3 or GCS
@@ -392,7 +392,7 @@ clickhouse:
     # test.xml: |
     #   <clickhouse>
     #     <some-setting>some-value</some-setting>
-    #   </clickhouse>
+  #   </clickhouse>
 
   ###
   ###
@@ -402,7 +402,7 @@ clickhouse:
 
   # -- When the `installCustomStorageClass` is enabled with `cloud` set as `gcp` or `aws`,
   # it creates custom storage class with volume expansion permission.
-  installCustomStorageClass: false
+  installCustomStorageClass: true
 
   ###
   ###
@@ -430,7 +430,7 @@ clickhouse:
     # -- Image Registry Secret Names for Clickhouse Operator.
     # If global.imagePullSecrets is set as well, it will merged.
     imagePullSecrets: []
-      # - "clickhouseOperator-pull-secret"
+    # - "clickhouseOperator-pull-secret"
 
     # ClickHouse Operator Service Account
     serviceAccount:
@@ -645,11 +645,11 @@ queryService:
 
   # -- Query-Service additional arguments for command line
   additionalArgs: []
-    # - --prefer-delta=true
+  # - --prefer-delta=true
 
   # -- Additional environments to set for queryService
   additionalEnvs: {}
-    # env_key: env_value
+  # env_key: env_value
 
   initContainers:
     init:
@@ -670,7 +670,7 @@ queryService:
         #   memory: 100Mi
         # limits:
         #   cpu: 100m
-        #   memory: 100Mi
+      #   memory: 100Mi
     migration:
       enabled: false
       image:
@@ -685,14 +685,14 @@ queryService:
         # - |
         #   echo "Running migration"
         #   sleep 10  # Replace with actual migration command
-        #   echo "Migration completed"
+      #   echo "Migration completed"
       resources: {}
         # requests:
         #   cpu: 100m
         #   memory: 100Mi
         # limits:
         #   cpu: 100m
-        #   memory: 100Mi
+      #   memory: 100Mi
 
   configVars:
     storage: clickhouse
@@ -717,7 +717,7 @@ queryService:
         ttl: 168h
 
   podSecurityContext: {}
-    # fsGroup: 2000
+  # fsGroup: 2000
 
   securityContext: {}
     # capabilities:
@@ -725,7 +725,7 @@ queryService:
     #   - ALL
     # readOnlyRootFilesystem: true
     # runAsNonRoot: true
-    # runAsUser: 1000
+  # runAsUser: 1000
 
   # -- Configure liveness and readiness probes.
   # ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
@@ -762,7 +762,7 @@ queryService:
     annotations: {}
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
-      # cert-manager.io/cluster-issuer: letsencrypt-prod
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
     # -- Query-Service Ingress Host names with their path details
     hosts:
       - host: query-service.domain.com
@@ -855,7 +855,7 @@ frontend:
     # -- Labels to use by service associated to Frontend
     labels: {}
     # -- Service Type: LoadBalancer (allows external access) or NodePort (more secure, no extra cost)
-    type: ClusterIP
+    type: LoadBalancer
     # -- Frontend HTTP port
     port: 3301
 
@@ -878,7 +878,7 @@ frontend:
         #   memory: 100Mi
         # limits:
         #   cpu: 100m
-        #   memory: 100Mi
+      #   memory: 100Mi
 
   autoscaling:
     enabled: false
@@ -898,7 +898,7 @@ frontend:
       #   policies:
       #   - type: Pods
       #     value: 2
-      #     periodSeconds: 60
+    #     periodSeconds: 60
 
     autoscalingTemplate: []
     keda:
@@ -924,7 +924,7 @@ frontend:
     "helm.sh/hook-weight": "5"
   # -- Frontend pod security context
   podSecurityContext: {}
-    # fsGroup: 2000
+  # fsGroup: 2000
 
   securityContext: {}
     # capabilities:
@@ -932,7 +932,7 @@ frontend:
     #   - ALL
     # readOnlyRootFilesystem: true
     # runAsNonRoot: true
-    # runAsUser: 1000
+  # runAsUser: 1000
 
   ingress:
     # -- Enable ingress for Frontend
@@ -943,7 +943,7 @@ frontend:
     annotations: {}
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
-      # cert-manager.io/cluster-issuer: letsencrypt-prod
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
     # -- Frontend Ingress Host names with their path details
     hosts:
       - host: frontend.domain.com
@@ -959,8 +959,8 @@ frontend:
 
   # -- Frontend Nginx extra configurations
   nginxExtraConfig: |
-      client_max_body_size 24M;
-      large_client_header_buffers 8 16k;
+    client_max_body_size 24M;
+    large_client_header_buffers 8 16k;
 
   # -- Configure resource requests and limits. Update according to your own use
   # case as these values might not be suitable for your workload.
@@ -1034,8 +1034,14 @@ alertmanager:
     nodePort: null
 
   # -- Additional environments to set for Alertmanager
-  additionalEnvs: {}
-    # env_key: env_value
+  additionalEnvs:
+    ALERTMANAGER_SMTP_FROM: "aws-pms-prod@snsoft.my"
+    ALERTMANAGER_SMTP_HOST: "smtp.gmail.com"
+    ALERTMANAGER_SMTP_PORT: "587"
+    ALERTMANAGER_SMTP_AUTH_USERNAME: "aws-pms-prod@snsoft.my"
+    ALERTMANAGER_SMTP_AUTH_PASSWORD: "]7(d85Q8x$Zn"
+    ALERTMANAGER_SMTP_REQUIRE_TLS: "false"
+  # env_key: env_value
 
   initContainers:
     init:
@@ -1056,7 +1062,7 @@ alertmanager:
         #   memory: 100Mi
         # limits:
         #   cpu: 100m
-        #   memory: 100Mi
+      #   memory: 100Mi
 
   podSecurityContext:
     fsGroup: 65534
@@ -1069,7 +1075,7 @@ alertmanager:
     # options:
     #   - name: ndots
     #     value: "2"
-    #   - name: edns0
+  #   - name: edns0
   securityContext:
     # capabilities:
     #   drop:
@@ -1100,7 +1106,7 @@ alertmanager:
     annotations: {}
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
-      # cert-manager.io/cluster-issuer: letsencrypt-prod
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
     # -- Alertmanager Ingress Host names with their path details
     hosts:
       - host: alertmanager.domain.com
@@ -1148,7 +1154,7 @@ alertmanager:
   # Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
   podDisruptionBudget: {}
     # maxUnavailable: 1
-    # minAvailable: 1
+  # minAvailable: 1
 
   persistence:
     # -- Enable data persistence using PVC for Alertmanager data.
@@ -1170,7 +1176,7 @@ alertmanager:
       - ReadWriteOnce
 
     # -- Persistent Volume size
-    size: 100Mi
+    size: 1000Mi
 
   ## Using the config, alertmanager.yml file is created.
   ## We no longer need the config file as query services
@@ -1276,7 +1282,7 @@ schemaMigrator:
     "helm.sh/hook-delete-policy": "before-hook-creation"
 
   # -- Whether to enable replication for schemaMigrator
-  enableReplication: false
+  enableReplication: true
 
   # -- Node selector for settings for schemaMigrator
   nodeSelector: {}
@@ -1312,7 +1318,7 @@ schemaMigrator:
         #   memory: 100Mi
         # limits:
         #   cpu: 100m
-        #   memory: 100Mi
+      #   memory: 100Mi
     chReady:
       enabled: true
       image:
@@ -1375,7 +1381,7 @@ schemaMigrator:
         #   memory: 100Mi
         # limits:
         #   cpu: 100m
-        #   memory: 100Mi
+      #   memory: 100Mi
 
 # Default values for OtelCollector
 otelCollector:
@@ -1409,7 +1415,7 @@ otelCollector:
         #   memory: 100Mi
         # limits:
         #   cpu: 100m
-        #   memory: 100Mi
+      #   memory: 100Mi
 
   # OpenTelemetry Collector executable
   command:
@@ -1455,7 +1461,7 @@ otelCollector:
 
   # -- Additional environments to set for OtelCollector
   additionalEnvs: {}
-    # env_key: env_value
+  # env_key: env_value
 
   # -- Whether to enable grouping of exceptions with same name and different stack trace.
   # This is useful when you have a lot of exceptions with same name but different stack trace.
@@ -1464,7 +1470,7 @@ otelCollector:
 
   minReadySeconds: 5
   progressDeadlineSeconds: 120
-  replicaCount: 1
+  replicaCount: 10
 
   # OtelCollector RBAC config
   clusterRole:
@@ -1678,7 +1684,7 @@ otelCollector:
       # nginx.ingress.kubernetes.io/ssl-redirect: "true"
       # nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
       # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
+    # kubernetes.io/tls-acme: "true"
     # -- OtelCollector Ingress Host names with their path details
     hosts:
       - host: otelcollector.domain.com
@@ -1723,7 +1729,7 @@ otelCollector:
           app.kubernetes.io/component: otel-collector
 
   podSecurityContext: {}
-    # fsGroup: 2000
+  # fsGroup: 2000
 
   securityContext: {}
     # capabilities:
@@ -1731,7 +1737,7 @@ otelCollector:
     #   - ALL
     # readOnlyRootFilesystem: true
     # runAsNonRoot: true
-    # runAsUser: 1000
+  # runAsUser: 1000
 
   autoscaling:
     enabled: false
@@ -1751,7 +1757,7 @@ otelCollector:
       #   policies:
       #   - type: Pods
       #     value: 2
-      #     periodSeconds: 60
+    #     periodSeconds: 60
 
     autoscalingTemplate: []
     keda:
@@ -1768,7 +1774,7 @@ otelCollector:
         # - type: cpu
         #   metadata:
         #     type: Utilization
-        #     value: "80"   # hpa make sure average Utlization <=80 by adding new pods
+      #     value: "80"   # hpa make sure average Utlization <=80 by adding new pods
 
   # -- Configurations for OtelCollector
   # @default -- See `values.yaml` for defaults
@@ -1942,13 +1948,13 @@ otelCollector:
           node_from_env_var: K8S_NODE_NAME
         pod_association:
           - sources:
-            - from: resource_attribute
-              name: k8s.pod.ip
+              - from: resource_attribute
+                name: k8s.pod.ip
           - sources:
-            - from: resource_attribute
-              name: k8s.pod.uid
+              - from: resource_attribute
+                name: k8s.pod.uid
           - sources:
-            - from: connection
+              - from: connection
         extract:
           metadata:
             - k8s.namespace.name
@@ -2058,10 +2064,10 @@ otelCollectorMetrics:
 
   # -- Additional environments to set for OtelCollectorMetrics
   additionalEnvs: {}
-    # env_key: env_value
+  # env_key: env_value
 
   podSecurityContext: {}
-    # fsGroup: 2000
+  # fsGroup: 2000
 
   securityContext: {}
     # capabilities:
@@ -2069,7 +2075,7 @@ otelCollectorMetrics:
     #   - ALL
     # readOnlyRootFilesystem: true
     # runAsNonRoot: true
-    # runAsUser: 1000
+  # runAsUser: 1000
 
   minReadySeconds: 5
   progressDeadlineSeconds: 120
@@ -2094,7 +2100,7 @@ otelCollectorMetrics:
         #   memory: 100Mi
         # limits:
         #   cpu: 100m
-        #   memory: 100Mi
+      #   memory: 100Mi
 
   # Configuration for ports
   ports:
@@ -2178,7 +2184,7 @@ otelCollectorMetrics:
       # nginx.ingress.kubernetes.io/ssl-redirect: "true"
       # nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
       # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
+    # kubernetes.io/tls-acme: "true"
     # -- OtelCollectorMetrics Ingress Host names with their path details
     hosts:
       - host: otelcollector-metrics.domain.com

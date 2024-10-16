@@ -7,7 +7,7 @@ global:
   # -- Overrides the storage class for all PVC with persistence enabled.
   # If not set, the default storage class is used.
   # If set to "-", storageClassName: "", which disables dynamic provisioning
-  storageClass: gp3
+  storageClass: null
   # -- Kubernetes cluster domain
   # It is used only when components are installed in different namespace
   clusterDomain: cluster.local
@@ -248,7 +248,7 @@ clickhouse:
       - ReadWriteOnce
 
     # -- Persistent Volume size
-    size: 100Gi
+    size: 20Gi
 
   # -- Clickhouse user profile configuration.
   # You can use this to override profile settings, for example

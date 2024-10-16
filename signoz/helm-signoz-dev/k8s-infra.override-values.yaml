@@ -1,0 +1,23 @@
+global:
+  cloud: aws
+  clusterName: signoz-dev
+  deploymentEnvironment: dev
+otelCollectorEndpoint: my-release-signoz-otel-collector:4317
+otelInsecure: true
+presets:
+  otlpExporter:
+    enabled: true
+  loggingExporter:
+    enabled: false
+  resourceDetection:
+    detectors:
+      - eks
+      - system
+  logsCollection:
+    enabled: true
+    whitelist:
+      enabled: true
+      signozLogs: false
+      namespaces:
+        - otel-agent
+
