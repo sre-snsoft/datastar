@@ -7,7 +7,7 @@ global:
   # -- Overrides the storage class for all PVC with persistence enabled.
   # If not set, the default storage class is used.
   # If set to "-", storageClassName: "", which disables dynamic provisioning
-  storageClass: gp3
+  storageClass: gp3-resizable
   # -- Kubernetes cluster domain
   # It is used only when components are installed in different namespace
   clusterDomain: cluster.local
