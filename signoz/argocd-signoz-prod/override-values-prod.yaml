@@ -64,7 +64,7 @@ clickhouse:
       signoz.io/path: "/metrics"
     metrics:
       enabled: true
-    logLevel: INFO
+    logLevel: ERROR
     livenessProbe:
       enabled: false
     readinessProbe:
@@ -165,7 +165,7 @@ clickhouse:
     # -- Annotations to use by service associated to Clickhouse instance
     annotations: {}
     # -- Service Type: LoadBalancer (allows external access) or NodePort (more secure, no extra cost)
-    type: LoadBalancer
+    type: ClusterIP
     # -- Clickhouse HTTP port
     httpPort: 8123
     # -- Clickhouse TCP port
