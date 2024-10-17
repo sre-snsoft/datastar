@@ -106,8 +106,8 @@ clickhouse:
     resources:
       limits: {}
       requests:
-        memory: 256Mi
-        cpu: 100m
+        memory: 2048Mi
+        cpu: 1000m
 
   # -- Which namespace to install clickhouse and `clickhouse-operator` to (defaults to namespace chart is installed to)
   namespace: ""
