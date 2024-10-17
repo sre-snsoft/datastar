@@ -195,8 +195,8 @@ clickhouse:
   # @default -- See `values.yaml` for defaults
   resources:
     requests:
-      cpu: 100m
-      memory: 200Mi
+      cpu: 24000m
+      memory: 48000Mi
   #   limits:
   #     cpu: 2000m
   #     memory: 4Gi
