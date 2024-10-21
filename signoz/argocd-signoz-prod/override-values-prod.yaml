@@ -305,7 +305,7 @@ clickhouse:
   # section on clusters and layouts.
   #
   layout:
-    shardsCount: 6
+    shardsCount: 10
     replicasCount: 2
 
   # -- ClickHouse settings configuration.
