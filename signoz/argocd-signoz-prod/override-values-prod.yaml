@@ -195,8 +195,8 @@ clickhouse:
   # @default -- See `values.yaml` for defaults
   resources:
     requests:
-      cpu: 12000m
-      memory: 24000Mi
+      cpu: 4000m
+      memory: 8000Mi
   #   limits:
   #     cpu: 2000m
   #     memory: 4Gi
@@ -248,7 +248,7 @@ clickhouse:
       - ReadWriteOnce
 
     # -- Persistent Volume size
-    size: 3Ti
+    size: 2Ti
 
   # -- Clickhouse user profile configuration.
   # You can use this to override profile settings, for example
@@ -1864,9 +1864,11 @@ otelCollector:
       #       if: '"temp_trace" in attributes'
       # Batch processor config.
       # ref: https://github.com/open-telemetry/opentelemetry-collector/blob/main/processor/batchprocessor/README.md
+      probabilistic_sampler:
+        sampling_percentage: 10.0
       batch:
-        send_batch_size: 50000
-        timeout: 1s
+        send_batch_size: 100000
+        timeout: 5s
       # Resource detection processor config.
       # ref: https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/resourcedetectionprocessor/README.md
       resourcedetection:
@@ -2007,7 +2009,7 @@ otelCollector:
       pipelines:
         traces:
           receivers: [otlp, jaeger]
-          processors: [signozspanmetrics/cumulative, signozspanmetrics/delta, batch]
+          processors: [signozspanmetrics/cumulative, signozspanmetrics/delta, batch, probabilistic_sampler]
           exporters: [clickhousetraces]
         metrics:
           receivers: [otlp]
