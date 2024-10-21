@@ -25,7 +25,7 @@ spec:
           targetRevision: 'HEAD'
           helm:
             valueFiles:
-              - values.yaml
+              - override-values-prod.yaml
 
       destination:
         server: 'https://kubernetes.default.svc'

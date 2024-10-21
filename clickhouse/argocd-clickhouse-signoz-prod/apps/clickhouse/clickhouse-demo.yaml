@@ -1,0 +1,50 @@
+apiVersion: "clickhouse.altinity.com/v1"
+kind: "ClickHouseInstallation"
+metadata:
+  name: "argocd-clickhouse"
+spec:
+  configuration:
+    clusters:
+      - name: "clickhouse"
+        layout:
+          shardsCount: 3
+          replicasCount: 2
+        templates:
+          podTemplate: server
+          volumeClaimTemplate: storage
+    users:
+      root/networks/ip: "::/0"
+      root/password: secretsecret
+      root/profile: default
+      root/access_management: 1
+    files:
+      query_log.xml: |
+        <clickhouse>
+          <query_log>
+             <database>system</database>
+             <table>query_log</table>
+             <engine>Engine = MergeTree PARTITION BY event_date ORDER BY event_time TTL event_date + INTERVAL 30 day</engine>
+             <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+          </query_log>
+        </clickhouse>
+    zookeeper: 
+      nodes:
+        - host: zookeeper
+
+  templates:
+    podTemplates:
+      - name: server
+        spec:
+          containers:
+          - name: clickhouse
+            image: altinity/clickhouse-server:22.8.11.16.altinitytest
+    volumeClaimTemplates:
+      - name: storage
+        # Do not delete PVC if installation is dropped.
+        reclaimPolicy: Retain
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 50Gi

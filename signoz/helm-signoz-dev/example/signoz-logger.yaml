@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: signoz-logger-demo-pod
+  namespace: otel-agent
+spec:
+  containers:
+    - name: signoz-logger-demo
+      image: 827812789584.dkr.ecr.ap-southeast-1.amazonaws.com/signoz/signoz-logger:latest
+      imagePullPolicy: Always

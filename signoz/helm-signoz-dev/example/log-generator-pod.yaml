@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: log-generator-pod
+  namespace: otel-agent
+spec:
+  containers:
+  - name: log-generator-container
+    image: busybox
+    command: ["/bin/sh", "-c"]
+    args:
+    - |
+      i=0
+      while true; do
+        echo "$(date) - Log Entry: $i"
+        i=$((i+1))
+        sleep 1
+      done
+    imagePullPolicy: IfNotPresent
+  restartPolicy: Always
+

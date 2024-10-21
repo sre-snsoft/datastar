@@ -2,66 +2,66 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   annotations:
-    argocd.argoproj.io/tracking-id: signoz-prod:clickhouse.altinity.com/ClickHouseInstallation:platform/signoz-prod-clickhouse
-  creationTimestamp: "2024-10-16T06:27:51Z"
-  generation: 1
+    argocd.argoproj.io/tracking-id: signoz:clickhouse.altinity.com/ClickHouseInstallation:platform/signoz-clickhouse
+  creationTimestamp: "2024-10-16T08:24:13Z"
+  generation: 5
   labels:
     app.kubernetes.io/component: clickhouse
-    app.kubernetes.io/instance: signoz-prod
+    app.kubernetes.io/instance: signoz
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: clickhouse
     app.kubernetes.io/version: 24.1.2
     clickhouse.altinity.com/app: chop
-    clickhouse.altinity.com/chi: signoz-prod-clickhouse
+    clickhouse.altinity.com/chi: signoz-clickhouse
     clickhouse.altinity.com/cluster: cluster
     clickhouse.altinity.com/namespace: platform
-    clickhouse.altinity.com/object-version: 22a296957ddbbbc09b8fe324c93d5299f63fcf0d
+    clickhouse.altinity.com/object-version: 611c26e01bfe64638365de0066c54bb932204e0f
     clickhouse.altinity.com/replica: "1"
     clickhouse.altinity.com/shard: "0"
     helm.sh/chart: clickhouse-24.1.6
-  name: chi-signoz-prod-clickhouse-cluster-0-1
+  name: chi-signoz-clickhouse-cluster-0-1
   namespace: platform
   ownerReferences:
   - apiVersion: clickhouse.altinity.com/v1
     blockOwnerDeletion: true
     controller: true
     kind: ClickHouseInstallation
-    name: signoz-prod-clickhouse
-    uid: d3f9c5b8-48a7-4ff2-bb07-25534da9a291
-  resourceVersion: "19000835"
-  uid: 8b48e36f-fc9d-498b-829b-8ef78240a552
+    name: signoz-clickhouse
+    uid: 71f03fe0-4c49-4f9f-b148-a050112796cf
+  resourceVersion: "19101734"
+  uid: 1eda35bd-a79b-48ad-acfd-8dccea938488
 spec:
   persistentVolumeClaimRetentionPolicy:
     whenDeleted: Retain
     whenScaled: Retain
   podManagementPolicy: OrderedReady
-  replicas: 1
+  replicas: 0
   revisionHistoryLimit: 10
   selector:
     matchLabels:
       clickhouse.altinity.com/app: chop
-      clickhouse.altinity.com/chi: signoz-prod-clickhouse
+      clickhouse.altinity.com/chi: signoz-clickhouse
       clickhouse.altinity.com/cluster: cluster
       clickhouse.altinity.com/namespace: platform
       clickhouse.altinity.com/replica: "1"
       clickhouse.altinity.com/shard: "0"
-  serviceName: chi-signoz-prod-clickhouse-cluster-0-1
+  serviceName: chi-signoz-clickhouse-cluster-0-1
   template:
     metadata:
       annotations:
-        argocd.argoproj.io/tracking-id: signoz-prod:clickhouse.altinity.com/ClickHouseInstallation:platform/signoz-prod-clickhouse
+        argocd.argoproj.io/tracking-id: signoz:clickhouse.altinity.com/ClickHouseInstallation:platform/signoz-clickhouse
         signoz.io/path: /metrics
         signoz.io/port: "9363"
         signoz.io/scrape: "true"
       creationTimestamp: null
       labels:
         app.kubernetes.io/component: clickhouse
-        app.kubernetes.io/instance: signoz-prod
+        app.kubernetes.io/instance: signoz
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: clickhouse
         app.kubernetes.io/version: 24.1.2
         clickhouse.altinity.com/app: chop
-        clickhouse.altinity.com/chi: signoz-prod-clickhouse
+        clickhouse.altinity.com/chi: signoz-clickhouse
         clickhouse.altinity.com/cluster: cluster
         clickhouse.altinity.com/namespace: platform
         clickhouse.altinity.com/ready: "yes"
@@ -125,15 +125,15 @@ spec:
         - mountPath: /etc/clickhouse-server/functions
           name: custom-functions-volume
         - mountPath: /etc/clickhouse-server/config.d/
-          name: chi-signoz-prod-clickhouse-common-configd
+          name: chi-signoz-clickhouse-common-configd
         - mountPath: /etc/clickhouse-server/users.d/
-          name: chi-signoz-prod-clickhouse-common-usersd
+          name: chi-signoz-clickhouse-common-usersd
         - mountPath: /etc/clickhouse-server/conf.d/
-          name: chi-signoz-prod-clickhouse-deploy-confd-cluster-0-1
+          name: chi-signoz-clickhouse-deploy-confd-cluster-0-1
       dnsPolicy: ClusterFirst
       hostAliases:
       - hostnames:
-        - chi-signoz-prod-clickhouse-cluster-0-1
+        - chi-signoz-clickhouse-cluster-0-1
         ip: 127.0.0.1
       initContainers:
       - command:
@@ -146,15 +146,13 @@ spec:
           chmod +x /var/lib/clickhouse/user_scripts/histogramQuantile
         image: docker.io/alpine:3.18.2
         imagePullPolicy: IfNotPresent
-        name: signoz-prod-clickhouse-udf-init
+        name: signoz-clickhouse-udf-init
         resources: {}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
         - mountPath: /var/lib/clickhouse/user_scripts
           name: shared-binary-volume
-      nodeSelector:
-        kubernetes.io/hostname: ip-10-150-9-48.ap-southeast-1.compute.internal
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext:
@@ -162,28 +160,28 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         runAsGroup: 101
         runAsUser: 101
-      serviceAccount: signoz-prod-clickhouse
-      serviceAccountName: signoz-prod-clickhouse
+      serviceAccount: signoz-clickhouse
+      serviceAccountName: signoz-clickhouse
       terminationGracePeriodSeconds: 30
       volumes:
       - emptyDir: {}
         name: shared-binary-volume
       - configMap:
           defaultMode: 420
-          name: signoz-prod-clickhouse-custom-functions
+          name: signoz-clickhouse-custom-functions
         name: custom-functions-volume
       - configMap:
           defaultMode: 420
-          name: chi-signoz-prod-clickhouse-common-configd
-        name: chi-signoz-prod-clickhouse-common-configd
+          name: chi-signoz-clickhouse-common-configd
+        name: chi-signoz-clickhouse-common-configd
       - configMap:
           defaultMode: 420
-          name: chi-signoz-prod-clickhouse-common-usersd
-        name: chi-signoz-prod-clickhouse-common-usersd
+          name: chi-signoz-clickhouse-common-usersd
+        name: chi-signoz-clickhouse-common-usersd
       - configMap:
           defaultMode: 420
-          name: chi-signoz-prod-clickhouse-deploy-confd-cluster-0-1
-        name: chi-signoz-prod-clickhouse-deploy-confd-cluster-0-1
+          name: chi-signoz-clickhouse-deploy-confd-cluster-0-1
+        name: chi-signoz-clickhouse-deploy-confd-cluster-0-1
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:
@@ -191,16 +189,16 @@ spec:
     kind: PersistentVolumeClaim
     metadata:
       annotations:
-        argocd.argoproj.io/tracking-id: signoz-prod:clickhouse.altinity.com/ClickHouseInstallation:platform/signoz-prod-clickhouse
+        argocd.argoproj.io/tracking-id: signoz:clickhouse.altinity.com/ClickHouseInstallation:platform/signoz-clickhouse
       creationTimestamp: null
       labels:
         app.kubernetes.io/component: clickhouse
-        app.kubernetes.io/instance: signoz-prod
+        app.kubernetes.io/instance: signoz
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: clickhouse
         app.kubernetes.io/version: 24.1.2
         clickhouse.altinity.com/app: chop
-        clickhouse.altinity.com/chi: signoz-prod-clickhouse
+        clickhouse.altinity.com/chi: signoz-clickhouse
         clickhouse.altinity.com/cluster: cluster
         clickhouse.altinity.com/namespace: platform
         clickhouse.altinity.com/replica: "1"
@@ -218,12 +216,9 @@ spec:
     status:
       phase: Pending
 status:
-  availableReplicas: 1
+  availableReplicas: 0
   collisionCount: 0
-  currentReplicas: 1
-  currentRevision: chi-signoz-prod-clickhouse-cluster-0-1-576f9bdd76
-  observedGeneration: 1
-  readyReplicas: 1
-  replicas: 1
-  updateRevision: chi-signoz-prod-clickhouse-cluster-0-1-576f9bdd76
-  updatedReplicas: 1
+  currentRevision: chi-signoz-clickhouse-cluster-0-1-786cf7bb5b
+  observedGeneration: 5
+  replicas: 0
+  updateRevision: chi-signoz-clickhouse-cluster-0-1-786cf7bb5b

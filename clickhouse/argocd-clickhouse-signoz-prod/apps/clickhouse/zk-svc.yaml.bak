@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    argocd.argoproj.io/tracking-id: zookeeper:/Service:clickhouse/zookeeper
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"zookeeper:/Service:clickhouse/zookeeper"},"labels":{"app":"zookeeper"},"name":"zookeeper","namespace":"clickhouse"},"spec":{"ports":[{"name":"client","port":2181},{"name":"prometheus","port":7000}],"selector":{"app":"zookeeper","what":"node"}}}
+  creationTimestamp: "2024-09-16T05:18:04Z"
+  labels:
+    app: zookeeper
+  name: zookeeper
+  namespace: clickhouse
+  resourceVersion: "1385222"
+  uid: a4320523-74d3-4c56-9ae1-98f3ed6996e1
+spec:
+  clusterIP: 172.20.81.128
+  clusterIPs:
+  - 172.20.81.128
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: client
+    port: 2181
+    protocol: TCP
+    targetPort: 2181
+  - name: prometheus
+    port: 7000
+    protocol: TCP
+    targetPort: 7000
+  selector:
+    app: zookeeper
+    what: node
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
