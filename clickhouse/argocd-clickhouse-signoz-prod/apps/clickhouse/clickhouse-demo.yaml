@@ -7,7 +7,7 @@ spec:
     clusters:
       - name: "clickhouse"
         layout:
-          shardsCount: 3
+          shardsCount: 12
           replicasCount: 2
         templates:
           podTemplate: server
@@ -23,7 +23,7 @@ spec:
           <query_log>
              <database>system</database>
              <table>query_log</table>
-             <engine>Engine = MergeTree PARTITION BY event_date ORDER BY event_time TTL event_date + INTERVAL 30 day</engine>
+             <engine>Engine = MergeTree PARTITION BY event_date ORDER BY event_time TTL event_date + INTERVAL 7 day</engine>
              <flush_interval_milliseconds>7500</flush_interval_milliseconds>
           </query_log>
         </clickhouse>
@@ -37,14 +37,15 @@ spec:
         spec:
           containers:
           - name: clickhouse
-            image: altinity/clickhouse-server:22.8.11.16.altinitytest
+            image: altinity/clickhouse-server:24.3.5.48.altinitytest-alpine
     volumeClaimTemplates:
       - name: storage
         # Do not delete PVC if installation is dropped.
         reclaimPolicy: Retain
         spec:
+          storageClassName: gp3-resizable
           accessModes:
             - ReadWriteOnce
           resources:
             requests:
-              storage: 50Gi
+              storage: 2Ti
