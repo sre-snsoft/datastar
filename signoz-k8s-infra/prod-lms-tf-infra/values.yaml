@@ -119,7 +119,7 @@ presets:
       enabled: true
       signozLogs: true
       namespaces:
-        - lms-qat
+        - lms-prod
       pods:
         - node-cpms-betorder-bingo
       containers: []

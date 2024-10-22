@@ -21,4 +21,4 @@ presets:
       enabled: true
       signozLogs: false
       namespaces:
-        - lms-qat
+        - lms-prod
