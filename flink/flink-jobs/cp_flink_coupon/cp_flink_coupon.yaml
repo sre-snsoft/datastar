@@ -48,12 +48,12 @@ spec:
     kubernetes.taskmanager.cpu.limit-factor: "8"
     parallelism.default: "4"
     taskmanager.data.port: "12000"
-    high-availability.storageDir: s3://flink-dos-qat-vpc-tfstate/cp-flink-coupon/ha
-    jobmanager.archive.fs.dir: s3://flink-dos-qat-vpc-tfstate/cp-flink-coupon/completed-jobs
-    historyserver.archive.fs.dir: s3://flink-dos-qat-vpc-tfstate/cp-flink-coupon/completed-jobs
+    high-availability.storageDir: s3://flink-dos-qat-jobs/cp-flink-coupon/ha
+    jobmanager.archive.fs.dir: s3://flink-dos-qat-jobs/cp-flink-coupon/completed-jobs
+    historyserver.archive.fs.dir: s3://flink-dos-qat-jobs/cp-flink-coupon/completed-jobs
     state.backend.type: hashmap
-    state.checkpoints.dir: s3://flink-dos-qat-vpc-tfstate/cp-flink-coupon/checkpoint/
-    state.savepoints.dir: s3://flink-dos-qat-vpc-tfstate/cp-flink-coupon/savepoint/
+    state.checkpoints.dir: s3://flink-dos-qat-jobs/cp-flink-coupon/checkpoint/
+    state.savepoints.dir: s3://flink-dos-qat-jobs/cp-flink-coupon/savepoint/
 
   serviceAccount: flink
   podTemplate:
@@ -115,7 +115,7 @@ spec:
           deploy.artifact.io/kind: 'flink'
           deploy.artifact.io/name: 'cp-flink-coupon'
       spec:
-        serviceAccountName: cp-flink-coupon
+        serviceAccountName: flink
         containers:
           - name: flink-main-container
             ports:

@@ -1,6 +1,6 @@
 global:
   cloud: aws
-  clusterName: signoz-prod
+  clusterName: lms-tf-prod
   deploymentEnvironment: prod
 namespace: "signoz-otel"
 
