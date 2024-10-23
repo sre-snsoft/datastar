@@ -1,9 +1,9 @@
 global:
   cloud: aws
-  clusterName: lms-tf-prod
+  clusterName: fpms-prod
   deploymentEnvironment: prod
 namespace: "signoz-otel"
-clusterName: "lms-tf-prod"
+clusterName: fpms-prod
 
 otelCollectorEndpoint: signoz-otel-collector-prod.fpms10.me:4317
 otelInsecure: true
@@ -22,4 +22,11 @@ presets:
       enabled: true
       signozLogs: false
       namespaces:
-        - lms-prod
+      #        - fpms-two
+      containers:
+        - client-apiserver
+        - mgnt-apiserver
+        - provider-apiserver
+        - provider-jili-apiserver
+        - provider-pp-apiserver
+        - provider-fc-apiserver

@@ -16,7 +16,7 @@ presets:
       - eks
       - system
   logsCollection:
-    enabled: false
+    enabled: true
     whitelist:
       enabled: true
       signozLogs: false
