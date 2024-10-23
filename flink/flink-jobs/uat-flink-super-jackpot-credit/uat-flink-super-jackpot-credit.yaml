@@ -10,7 +10,7 @@ data:
     "PropertyMap":{
       "coupon.tumble.window.size.seconds":1,
       "cp.pulsar.consumer.name": "dos-flink-bet-consume-chances",
-      "cp.pulsar.destination.service.url": "pulsar://pulsar-proxy-dos-2.dos99.me:6650",
+      "cp.pulsar.destination.service.url": "pulsar://pulsar-proxy-dos.dos99.me:6650",
       "cp.pulsar.service.url": "pulsar://pulsar-proxy-dos.dos99.me:6650",
       "cp.pulsar.subscription.name": "dos-flink-bet-subscriber-credit",
       "dos.credit.topic":"dos_flink_super_jackpot_credit",
@@ -43,12 +43,12 @@ spec:
     kubernetes.taskmanager.cpu.limit-factor: "8"
     parallelism.default: "4"
     taskmanager.data.port: "12000"
-    high-availability.storageDir: s3://flink-dos-qat-vpc-tfstate/uat-flink-super-jackpot-credit/ha
-    jobmanager.archive.fs.dir: s3://flink-dos-qat-vpc-tfstate/uat-flink-super-jackpot-credit/completed-jobs
-    historyserver.archive.fs.dir: s3://flink-dos-qat-vpc-tfstate/uat-flink-super-jackpot-credit/completed-jobs
+    high-availability.storageDir: s3://flink-dos-qat-jobs/uat-flink-super-jackpot-credit/ha
+    jobmanager.archive.fs.dir: s3://flink-dos-qat-jobs/uat-flink-super-jackpot-credit/completed-jobs
+    historyserver.archive.fs.dir: s3://flink-dos-qat-jobs/uat-flink-super-jackpot-credit/completed-jobs
     state.backend.type: hashmap
-    state.checkpoints.dir: s3://flink-dos-qat-vpc-tfstate/uat-flink-super-jackpot-credit/checkpoint/
-    state.savepoints.dir: s3://flink-dos-qat-vpc-tfstate/uat-flink-super-jackpot-credit/savepoint/
+    state.checkpoints.dir: s3://flink-dos-qat-jobs/uat-flink-super-jackpot-credit/checkpoint/
+    state.savepoints.dir: s3://flink-dos-qat-jobs/uat-flink-super-jackpot-credit/savepoint/
 
   serviceAccount: flink
   podTemplate:

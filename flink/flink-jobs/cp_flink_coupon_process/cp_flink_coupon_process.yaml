@@ -11,13 +11,13 @@ data:
       "ckp.interval":5000,
       "coupon.job.window-process": "process",
       "cp.pulsar.consumer.name":"dos-flink-bet-cousume-coupon-process",
-      "cp.pulsar.destination.service.url":"pulsar://pulsar-proxy-dos.dos99.me:6650",
-      "cp.pulsar.service.url":"pulsar://pulsar-proxy-dos.dos99.me:6650",
-      "cp.pulsar.subscription.name":"dos-flink-bet-consume-coupon-process",
+      "cp.pulsar.destination.service.url":"pulsar://pulsar-sw-main-external.client88.me:6650",
+      "cp.pulsar.service.url":"pulsar://pulsar-sw-main-external.client88.me:6650",
+      "cp.pulsar.subscription.name":"dos-eksflink-bet-consume-coupon-process",
       "dos.coupon.topic":"dos_flink_realtime_coupon",
       "dos.factory.identifier":"CP_Coupon",
       "dos.sink.pulsar.producer":"dos-cp-flink-coupon-producer-process",
-      "keyBy.parallelism":64,
+      "keyBy.parallelism":32,
       "mongo.connection.string":"mongodb+srv://qatFlinkServiceUser:Bsvzgxff5H4fSNwk@qat-dos-backoffice-pri.0ltpc.mongodb.net/dosdb?retryWrites=true&w=majority",
       "redis.host":"qat-fpms-cpms-redis-sg.3ttnyh.clustercfg.apse1.cache.amazonaws.com",
       "redis.cluster":true,
@@ -33,7 +33,7 @@ metadata:
     deploy.artifact.io/kind: 'flink'
     deploy.artifact.io/name: 'cp-flink-coupon-process'
 spec:
-  image: 545009824097.dkr.ecr.ap-southeast-1.amazonaws.com/flink:uat-cp-flink-coupon-v2
+  image: 545009824097.dkr.ecr.ap-southeast-1.amazonaws.com/flink:dos_realtime_coupon-0.2.2-SNAPSHOT
   imagePullPolicy: Always
   flinkVersion: v1_19
   flinkConfiguration:
@@ -140,7 +140,7 @@ spec:
               name: cp-flink-coupon-process-config
 
   job:
-    jarURI: local:///opt/flink/dos_realtime_coupon-0.2.1-snapshot.jar
+    jarURI: local:///opt/flink/dos_realtime_coupon-0.2.2-SNAPSHOT.jar
     parallelism: 4
     allowNonRestoredState: False
     upgradeMode: 'savepoint'

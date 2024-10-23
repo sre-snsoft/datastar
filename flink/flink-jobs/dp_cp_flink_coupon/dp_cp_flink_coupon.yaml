@@ -14,7 +14,7 @@ data:
       "cp.pulsar.consumer.name":"dos-flink-bet-cousume-coupon",
       "cp.pulsar.destination.service.url":"pulsar://pulsar-sw-main-external.client88.me:6650",
       "cp.pulsar.service.url":"pulsar://pulsar-sw-main-external.client88.me:6650",
-      "cp.pulsar.subscription.name":"dos-flink-bet-consume-coupon",
+      "cp.pulsar.subscription.name":"dos-eksflink-bet-consume-coupon",
       "dos.coupon.topic":"dos_flink_realtime_coupon",
       "dos.factory.identifier":"CP_Coupon",
       "dos.sink.pulsar.producer":"dos-cp-flink-coupon-producer",

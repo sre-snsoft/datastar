@@ -9,12 +9,12 @@ data:
     [{"PropertyGroupId":"RealtimeCoupon",
     "PropertyMap":{
       "cp.pulsar.consumer.name": "dos-flink-bet-consume-chances",
-      "cp.pulsar.destination.service.url": "pulsar://pulsar-proxy-dos-2.dos99.me:6650",
+      "cp.pulsar.destination.service.url": "pulsar://pulsar-proxy-dos.dos99.me:6650",
       "cp.pulsar.service.url": "pulsar://pulsar-proxy-dos.dos99.me:6650",
       "cp.pulsar.subscription.name": "dos-flink-bet-consume-chances",
       "dos.sink.pulsar.producer": "dos-cp-flink-super-jackpot-chance-producer",
       "is.cp.source": true,
-      "keyBy.parallelism": 64,
+      "keyBy.parallelism": 16,
       "sink.parallelism": 6,
       "source.parallelism": 12,
       "super.jackpot.chance.job.enabled": true}
@@ -43,12 +43,12 @@ spec:
     kubernetes.taskmanager.cpu.limit-factor: "8"
     parallelism.default: "4"
     taskmanager.data.port: "12000"
-    high-availability.storageDir: s3://flink-dos-qat-vpc-tfstate/uat-flink-super-jackpot-chances/ha
-    jobmanager.archive.fs.dir: s3://flink-dos-qat-vpc-tfstate/uat-flink-super-jackpot-chances/completed-jobs
-    historyserver.archive.fs.dir: s3://flink-dos-qat-vpc-tfstate/uat-flink-super-jackpot-chances/completed-jobs
+    high-availability.storageDir: s3://flink-dos-qat-jobs/uat-flink-super-jackpot-chances/ha
+    jobmanager.archive.fs.dir: s3://flink-dos-qat-jobs/uat-flink-super-jackpot-chances/completed-jobs
+    historyserver.archive.fs.dir: s3://flink-dos-qat-jobs/uat-flink-super-jackpot-chances/completed-jobs
     state.backend.type: hashmap
-    state.checkpoints.dir: s3://flink-dos-qat-vpc-tfstate/uat-flink-super-jackpot-chances/checkpoint/
-    state.savepoints.dir: s3://flink-dos-qat-vpc-tfstate/uat-flink-super-jackpot-chances/savepoint/
+    state.checkpoints.dir: s3://flink-dos-qat-jobs/uat-flink-super-jackpot-chances/checkpoint/
+    state.savepoints.dir: s3://flink-dos-qat-jobs/uat-flink-super-jackpot-chances/savepoint/
 
   serviceAccount: flink
   podTemplate:

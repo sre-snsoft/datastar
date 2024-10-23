@@ -12,7 +12,7 @@ data:
       "coupon.job.window-process": "window",
       "coupon.tumble.window.size.seconds": 1800,
       "cp.pulsar.consumer.name": "dos-flink-bet-cousume-coupon4",
-      "cp.pulsar.destination.service.url": "pulsar://pulsar-proxy-dos-2.dos99.me:6650",
+      "cp.pulsar.destination.service.url": "pulsar://pulsar-proxy-dos.dos99.me:6650",
       "cp.pulsar.service.url": "pulsar://pulsar-proxy-dos.dos99.me:6650",
       "cp.pulsar.subscription.name": "dos-flink-bet-consume-coupon4",
       "dos.coupon.topic": "dos_flink_realtime_coupon",
@@ -27,7 +27,7 @@ data:
       "sink.parallelism": 6,
       "starting.offsets": "latest-offset",
       "state.backend": "rocksdb",
-      "window.parallelism": 128}
+      "window.parallelism": 32}
     }]
 ---
 apiVersion: flink.apache.org/v1beta1
@@ -46,19 +46,19 @@ spec:
     jobmanager.memory.process.size: "1g"
     kubernetes.jobmanager.memory.limit-factor: "1.5"
     kubernetes.jobmanager.cpu.amount: "1"
-    kubernetes.jobmanager.cpu.limit-factor: "8"
+    kubernetes.jobmanager.cpu.limit-factor: "4"
     taskmanager.memory.process.size: "1g"
     kubernetes.taskmanager.memory.limit-factor: "1.33"
     kubernetes.taskmanager.cpu.amount: "1"
-    kubernetes.taskmanager.cpu.limit-factor: "8"
+    kubernetes.taskmanager.cpu.limit-factor: "4"
     parallelism.default: "4"
     taskmanager.data.port: "12000"
-    high-availability.storageDir: s3://flink-dos-qat-vpc-tfstate/uat-cp-flink-coupon/ha
-    jobmanager.archive.fs.dir: s3://flink-dos-qat-vpc-tfstate/uat-cp-flink-coupon/completed-jobs
-    historyserver.archive.fs.dir: s3://flink-dos-qat-vpc-tfstate/uat-cp-flink-coupon/completed-jobs
+    high-availability.storageDir: s3://flink-dos-qat-jobs/uat-cp-flink-coupon/ha
+    jobmanager.archive.fs.dir: s3://flink-dos-qat-jobs/uat-cp-flink-coupon/completed-jobs
+    historyserver.archive.fs.dir: s3://flink-dos-qat-jobs/uat-cp-flink-coupon/completed-jobs
     state.backend.type: hashmap
-    state.checkpoints.dir: s3://flink-dos-qat-vpc-tfstate/uat-cp-flink-coupon/checkpoint/
-    state.savepoints.dir: s3://flink-dos-qat-vpc-tfstate/uat-cp-flink-coupon/savepoint/
+    state.checkpoints.dir: s3://flink-dos-qat-jobs/uat-cp-flink-coupon/checkpoint/
+    state.savepoints.dir: s3://flink-dos-qat-jobs/uat-cp-flink-coupon/savepoint/
 
   serviceAccount: flink
   podTemplate:

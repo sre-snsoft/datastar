@@ -9,20 +9,21 @@ data:
     [{"PropertyGroupId":"RealtimeCoupon",
     "PropertyMap":{
       "coupon.job.window-process": "window",
-      "coupon.tumble.window.size.seconds": 1800,
-      "dos.coupon.topic": "dos-realtime-coupon-loadtest",
-      "dos.factory.identifier": "DP_Coupon",
-      "enable.unaligned.checkpoints": true,
-      "kafka.bootstrap.servers":"b-2.mskuattidbtoodps.bw2373.c2.kafka.ap-southeast-1.amazonaws.com:9092,b-1.mskuattidbtoodps.bw2373.c2.kafka.ap-southeast-1.amazonaws.com:9092,b-3.mskuattidbtoodps.bw2373.c2.kafka.ap-southeast-1.amazonaws.com:9092",
-      "kafka.coupon.bootstrap.servers": "b-3.mskuatmms.kaww3z.c2.kafka.ap-southeast-1.amazonaws.com:9092,b-2.mskuatmms.kaww3z.c2.kafka.ap-southeast-1.amazonaws.com:9092,b-1.mskuatmms.kaww3z.c2.kafka.ap-southeast-1.amazonaws.com:9092",
-      "kafka.group.id":"dp-dos-bet-records-group-id-pressure-test",
-      "kafka.topic":"game_order_bill_loadtest",
-      "kafka.transactional.id.prefix":"dos-flink-coupon-window-producer-load-test1",
-      "mongo.connection.string":"mongodb+srv://qatDOsDevUs3r:xauxpSmaTRmY4EUE@qat-stable-dos-backoffi-pri.0ltpc.mongodb.net/dosdb?retryWrites=true&w=majority&appName=qat-stable-DOS-backoffice",
-      "redis.host":"uat-dos-flink-redis.vvnt7i.clustercfg.apse1.cache.amazonaws.com",
-      "sink.parallelism": 6,
-      "source.parallelism":8,
-      "window.parallelism":12}
+      "ckp.interval": 30000,
+      "coupon.tumble.window.size.seconds": 60,
+      "cp.pulsar.consumer.name": "dos-flink-bet-cousume-coupon",
+      "cp.pulsar.destination.service.url": "pulsar://pulsar-sw-main-external.client88.me:6650",
+      "cp.pulsar.service.url": "pulsar://pulsar-sw-main-external.client88.me:6650",
+      "cp.pulsar.subscription.name": "dos-eksflink-bet-consume-coupon",
+      "dos.coupon.topic": "dos_flink_realtime_coupon",
+      "dos.factory.identifier": "CP_Coupon",
+      "dos.sink.pulsar.producer": "dos-cp-flink-coupon-producer",
+      "mongo.connection.string": "mongodb+srv://qatFlinkServiceUser:Bsvzgxff5H4fSNwk@qat-dos-backoffice-pri.0ltpc.mongodb.net/dosdb?retryWrites=true&w=majority",
+      "redis.cluster": true,
+      "redis.host": "qat-fpms-cpms-redis-sg.3ttnyh.clustercfg.apse1.cache.amazonaws.com",
+      "starting.offsets": "latest-offset",
+      "sink.parallelism": 1,
+      "window.parallelism": 32}
     }]
 ---
 apiVersion: flink.apache.org/v1beta1
@@ -34,7 +35,7 @@ metadata:
     deploy.artifact.io/kind: 'flink'
     deploy.artifact.io/name: 'cp-flink-coupon'
 spec:
-  image: 545009824097.dkr.ecr.ap-southeast-1.amazonaws.com/flink:uat-cp-flink-coupon-v2
+  image: 545009824097.dkr.ecr.ap-southeast-1.amazonaws.com/flink:dos_realtime_coupon-0.2.1-snapshot
   imagePullPolicy: Always
   flinkVersion: v1_19
   flinkConfiguration:
@@ -139,7 +140,6 @@ spec:
           - name: cp-flink-coupon-config
             configMap:
               name: cp-flink-coupon-config
-
   job:
     jarURI: local:///opt/flink/dos_realtime_coupon-0.2.1-snapshot.jar
     parallelism: 4

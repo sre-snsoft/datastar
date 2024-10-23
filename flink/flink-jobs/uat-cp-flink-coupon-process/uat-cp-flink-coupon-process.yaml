@@ -10,7 +10,7 @@ data:
       "ckp.interval": 5000,
       "coupon.job.window-process": "process",
       "cp.pulsar.consumer.name": "dos-flink-bet-cousume-coupon-process-uat8",
-      "cp.pulsar.destination.service.url": "pulsar://pulsar-proxy-dos-2.dos99.me:6650",
+      "cp.pulsar.destination.service.url": "pulsar://pulsar-proxy-dos.dos99.me:6650",
       "cp.pulsar.service.url":"pulsar://pulsar-proxy-dos.dos99.me:6650",
       "cp.pulsar.subscription.name": "dos-flink-bet-consume-coupon-process-uat8",
       "dos.coupon.topic":"dos_flink_realtime_coupon",
@@ -19,7 +19,7 @@ data:
       "enable.debug.print.log":false,
       "enable.incremental.checkpoints":true,
       "enable.unaligned.checkpoints":true,
-      "keyBy.parallelism": 128,
+      "keyBy.parallelism": 32,
       "mongo.connection.string":"mongodb+srv://qatDOsDevUs3r:xauxpSmaTRmY4EUE@qat-stable-dos-backoffi-pri.0ltpc.mongodb.net/dosdb?retryWrites=true&w=majority&appName=qat-stable-DOS-backoffice",
       "redis.cluster":true,
       "redis.host":"uat-dos-flink-redis.vvnt7i.clustercfg.apse1.cache.amazonaws.com",
@@ -44,19 +44,19 @@ spec:
     jobmanager.memory.process.size: "1g"
     kubernetes.jobmanager.memory.limit-factor: "1.5"
     kubernetes.jobmanager.cpu.amount: "1"
-    kubernetes.jobmanager.cpu.limit-factor: "8"
+    kubernetes.jobmanager.cpu.limit-factor: "4"
     taskmanager.memory.process.size: "1g"
     kubernetes.taskmanager.memory.limit-factor: "1.33"
     kubernetes.taskmanager.cpu.amount: "1"
-    kubernetes.taskmanager.cpu.limit-factor: "8"
+    kubernetes.taskmanager.cpu.limit-factor: "4"
     parallelism.default: "4"
     taskmanager.data.port: "12000"
-    high-availability.storageDir: s3://flink-dos-qat-vpc-tfstate/uat-cp-flink-coupon-process/ha
-    jobmanager.archive.fs.dir: s3://flink-dos-qat-vpc-tfstate/uat-cp-flink-coupon-process/completed-jobs
-    historyserver.archive.fs.dir: s3://flink-dos-qat-vpc-tfstate/uat-cp-flink-coupon-process/completed-jobs
+    high-availability.storageDir: s3://flink-dos-qat-jobs/uat-cp-flink-coupon-process/ha
+    jobmanager.archive.fs.dir: s3://flink-dos-qat-jobs/uat-cp-flink-coupon-process/completed-jobs
+    historyserver.archive.fs.dir: s3://flink-dos-qat-jobs/uat-cp-flink-coupon-process/completed-jobs
     state.backend.type: hashmap
-    state.checkpoints.dir: s3://flink-dos-qat-vpc-tfstate/uat-cp-flink-coupon-process/checkpoint/
-    state.savepoints.dir: s3://flink-dos-qat-vpc-tfstate/uat-cp-flink-coupon-process/savepoint/
+    state.checkpoints.dir: s3://flink-dos-qat-jobs/uat-cp-flink-coupon-process/checkpoint/
+    state.savepoints.dir: s3://flink-dos-qat-jobs/uat-cp-flink-coupon-process/savepoint/
 
   serviceAccount: flink
   podTemplate:

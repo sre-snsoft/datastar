@@ -10,9 +10,9 @@ data:
     "PropertyMap":{
       "coupon.tumble.window.size.seconds":1,
       "cp.pulsar.consumer.name": "dos-flink-bet-consumer-credit",
-      "cp.pulsar.destination.service.url":"pulsar://pulsar-proxy-dos.dos99.me:6650",
-      "cp.pulsar.service.url":"pulsar://pulsar-proxy-dos.dos99.me:6650",
-      "cp.pulsar.subscription.name":"dos-flink-bet-subscriber-credit",
+      "cp.pulsar.destination.service.url":"pulsar://pulsar-sw-main-external.client88.me:6650",
+      "cp.pulsar.service.url":"pulsar://pulsar-sw-main-external.client88.me:6650",
+      "cp.pulsar.subscription.name":"dos-eksflink-bet-subscriber-credit",
       "dos.credit.topic":"dos_flink_super_jackpot_credit",
       "is.cp.source":true,
       "sink.parallelism":1,
@@ -30,7 +30,7 @@ metadata:
     deploy.artifact.io/kind: 'flink'
     deploy.artifact.io/name: 'flink-super-jackpot-credit'
 spec:
-  image: 545009824097.dkr.ecr.ap-southeast-1.amazonaws.com/flink:dos_super_jackpot-0.1.1
+  image: 545009824097.dkr.ecr.ap-southeast-1.amazonaws.com/flink:dos_super_jackpot-0.2.1-snapshot
   imagePullPolicy: Always
   flinkVersion: v1_19
   flinkConfiguration:
@@ -137,7 +137,7 @@ spec:
               name: flink-super-jackpot-credit-config
 
   job:
-    jarURI: local:///opt/flink/dos_super_jackpot-0.1.1-SNAPSHOT.jar
+    jarURI: local:///opt/flink/dos_super_jackpot-0.2.1-snapshot.jar
     parallelism: 4
     allowNonRestoredState: False
     upgradeMode: 'savepoint'

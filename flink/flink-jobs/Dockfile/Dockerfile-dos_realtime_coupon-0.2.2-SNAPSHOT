@@ -1,0 +1,14 @@
+FROM --platform=linux/amd64 flink:1.19.0
+#添加运行jar包
+ADD dos_realtime_coupon-0.2.2-SNAPSHOT.jar /opt/flink/dos_realtime_coupon-0.2.2-SNAPSHOT.jar
+
+#添加依赖包
+#AWS 读取配置
+WORKDIR /opt/flink/lib
+RUN wget https://repo1.maven.org/maven2/com/amazonaws/aws-kinesisanalytics-runtime/1.2.0/aws-kinesisanalytics-runtime-1.2.0.jar
+# 监控依赖
+RUN wget https://repo1.maven.org/maven2/org/apache/flink/flink-metrics-prometheus/1.19.0/flink-metrics-prometheus-1.19.0.jar
+# S3依赖
+RUN wget https://repo1.maven.org/maven2/org/apache/flink/flink-s3-fs-hadoop/1.19.0/flink-s3-fs-hadoop-1.19.0.jar
+RUN wget https://repo1.maven.org/maven2/org/apache/flink/flink-s3-fs-presto/1.19.0/flink-s3-fs-presto-1.19.0.jar
+
