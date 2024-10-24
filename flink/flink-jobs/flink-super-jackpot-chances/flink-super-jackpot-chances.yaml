@@ -6,7 +6,7 @@ metadata:
   namespace: flink
 data:
   application_properties.json: |-
-    [{"PropertyGroupId":"RealtimeCoupon",
+    [{"PropertyGroupId":"SuperJackpot",
     "PropertyMap":{
       "cp.pulsar.consumer.name": "dos-flink-bet-consume-chances",
       "cp.pulsar.destination.service.url": "pulsar://pulsar-sw-main-external.client88.me:6650",
@@ -18,7 +18,7 @@ data:
       "sink.parallelism":1,
       "source.parallelism":1,
       "super.jackpot.chance.job.enabled":true,
-      "window.parallelism":64}
+      "window.parallelism":32}
     }]
 ---
 apiVersion: flink.apache.org/v1beta1

@@ -23,7 +23,7 @@ data:
       "redis.host": "qat-fpms-cpms-redis-sg.3ttnyh.clustercfg.apse1.cache.amazonaws.com",
       "starting.offsets": "latest-offset",
       "sink.parallelism": 1,
-      "window.parallelism": 32}
+      "window.parallelism": 16}
     }]
 ---
 apiVersion: flink.apache.org/v1beta1

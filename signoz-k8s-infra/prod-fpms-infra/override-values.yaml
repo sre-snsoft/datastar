@@ -26,6 +26,7 @@ presets:
       containers:
         - client-apiserver
         - mgnt-apiserver
+        - restful-apiserver
         - provider-apiserver
         - provider-jili-apiserver
         - provider-pp-apiserver

@@ -17,7 +17,7 @@ data:
       "dos.coupon.topic":"dos_flink_realtime_coupon",
       "dos.factory.identifier":"CP_Coupon",
       "dos.sink.pulsar.producer":"dos-cp-flink-coupon-producer-process",
-      "keyBy.parallelism":32,
+      "keyBy.parallelism":16,
       "mongo.connection.string":"mongodb+srv://qatFlinkServiceUser:Bsvzgxff5H4fSNwk@qat-dos-backoffice-pri.0ltpc.mongodb.net/dosdb?retryWrites=true&w=majority",
       "redis.host":"qat-fpms-cpms-redis-sg.3ttnyh.clustercfg.apse1.cache.amazonaws.com",
       "redis.cluster":true,
